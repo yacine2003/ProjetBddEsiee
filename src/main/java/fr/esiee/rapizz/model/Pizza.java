@@ -8,31 +8,11 @@ import java.util.List;
  */
 public class Pizza {
     
-    // Enum pour les tailles de pizza
-    public enum Taille {
-        NAINE(0.67), // Réduction de 1/3 du prix
-        HUMAINE(1.0), // Prix normal
-        OGRESSE(1.33); // Augmentation de 1/3 du prix
-        
-        private double coefficient;
-        
-        Taille(double coefficient) {
-            this.coefficient = coefficient;
-        }
-        
-        public double getCoefficient() {
-            return coefficient;
-        }
-        
-        @Override
-        public String toString() {
-            return name().toLowerCase();
-        }
-    }
-    
     private int idPizza;
     private String nom;
+    private String description;
     private double prixBase;
+    private boolean estPersonnalisable;
     private List<Ingredient> ingredients;
     
     /**
@@ -45,22 +25,28 @@ public class Pizza {
     /**
      * Constructeur sans id
      * @param nom Nom de la pizza
+     * @param description Description de la pizza
      * @param prixBase Prix de base (taille humaine)
+     * @param estPersonnalisable Indique si la pizza peut être personnalisée
      */
-    public Pizza(String nom, double prixBase) {
+    public Pizza(String nom, String description, double prixBase, boolean estPersonnalisable) {
         this();
         this.nom = nom;
+        this.description = description;
         this.prixBase = prixBase;
+        this.estPersonnalisable = estPersonnalisable;
     }
     
     /**
      * Constructeur complet
      * @param idPizza Identifiant de la pizza
      * @param nom Nom de la pizza
+     * @param description Description de la pizza
      * @param prixBase Prix de base (taille humaine)
+     * @param estPersonnalisable Indique si la pizza peut être personnalisée
      */
-    public Pizza(int idPizza, String nom, double prixBase) {
-        this(nom, prixBase);
+    public Pizza(int idPizza, String nom, String description, double prixBase, boolean estPersonnalisable) {
+        this(nom, description, prixBase, estPersonnalisable);
         this.idPizza = idPizza;
     }
     
@@ -89,7 +75,7 @@ public class Pizza {
      * @return Prix calculé
      */
     public double calculerPrix(Taille taille) {
-        return Math.round(prixBase * taille.getCoefficient() * 100) / 100.0;
+        return Math.round(prixBase * taille.getCoefficientPrix() * 100) / 100.0;
     }
     
     // Getters et Setters
@@ -110,12 +96,28 @@ public class Pizza {
         this.nom = nom;
     }
     
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
     public double getPrixBase() {
         return prixBase;
     }
     
     public void setPrixBase(double prixBase) {
         this.prixBase = prixBase;
+    }
+    
+    public boolean isEstPersonnalisable() {
+        return estPersonnalisable;
+    }
+    
+    public void setEstPersonnalisable(boolean estPersonnalisable) {
+        this.estPersonnalisable = estPersonnalisable;
     }
     
     public List<Ingredient> getIngredients() {

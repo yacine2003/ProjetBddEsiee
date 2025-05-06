@@ -9,7 +9,10 @@ public class Client {
     private String nom;
     private String prenom;
     private String adresse;
+    private String ville;
     private String telephone;
+    private String email;
+    private String motDePasse;
     private double soldeCompte;
     private int nbPizzasAchetees;
     
@@ -24,15 +27,22 @@ public class Client {
      * @param nom Nom du client
      * @param prenom Prénom du client
      * @param adresse Adresse du client
+     * @param ville Ville du client
      * @param telephone Numéro de téléphone du client
+     * @param email Email du client
+     * @param motDePasse Mot de passe du client
      * @param soldeCompte Solde du compte client
      * @param nbPizzasAchetees Nombre de pizzas achetées (pour la fidélité)
      */
-    public Client(String nom, String prenom, String adresse, String telephone, double soldeCompte, int nbPizzasAchetees) {
+    public Client(String nom, String prenom, String adresse, String ville, String telephone, String email, 
+                 String motDePasse, double soldeCompte, int nbPizzasAchetees) {
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
+        this.ville = ville;
         this.telephone = telephone;
+        this.email = email;
+        this.motDePasse = motDePasse;
         this.soldeCompte = soldeCompte;
         this.nbPizzasAchetees = nbPizzasAchetees;
     }
@@ -43,16 +53,23 @@ public class Client {
      * @param nom Nom du client
      * @param prenom Prénom du client
      * @param adresse Adresse du client
+     * @param ville Ville du client
      * @param telephone Numéro de téléphone du client
+     * @param email Email du client
+     * @param motDePasse Mot de passe du client
      * @param soldeCompte Solde du compte client
      * @param nbPizzasAchetees Nombre de pizzas achetées (pour la fidélité)
      */
-    public Client(int idClient, String nom, String prenom, String adresse, String telephone, double soldeCompte, int nbPizzasAchetees) {
+    public Client(int idClient, String nom, String prenom, String adresse, String ville, String telephone, 
+                 String email, String motDePasse, double soldeCompte, int nbPizzasAchetees) {
         this.idClient = idClient;
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
+        this.ville = ville;
         this.telephone = telephone;
+        this.email = email;
+        this.motDePasse = motDePasse;
         this.soldeCompte = soldeCompte;
         this.nbPizzasAchetees = nbPizzasAchetees;
     }
@@ -144,12 +161,36 @@ public class Client {
         this.adresse = adresse;
     }
     
+    public String getVille() {
+        return ville;
+    }
+    
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+    
     public String getTelephone() {
         return telephone;
     }
     
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+    
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
     }
     
     public double getSoldeCompte() {

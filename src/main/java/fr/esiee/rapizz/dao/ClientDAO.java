@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe DAO pour la gestion des clients dans la base de données
+ * Classe DAO pour gérer les clients dans la base de données
  */
 public class ClientDAO {
     
@@ -120,6 +120,37 @@ public class ClientDAO {
     }
     
     /**
+     * Récupère un client par son email
+     * Cette méthode est désactivée car la colonne email n'existe pas dans la table Client
+     * @param email Email du client
+     * @return Le client ou null si non trouvé
+     */
+    public Client trouverParEmail(String email) {
+        // Cette méthode ne peut pas fonctionner car la colonne email n'existe pas
+        System.err.println("Attention: La méthode trouverParEmail ne peut pas fonctionner car la colonne email n'existe pas dans la table Client");
+        return null;
+        /*
+        String sql = "SELECT * FROM Client WHERE email = ?";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, email);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return extraireClientDuResultSet(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche du client par email : " + e.getMessage());
+        }
+        
+        return null;
+        */
+    }
+    
+    /**
      * Récupère tous les clients de la base de données
      * @return Liste des clients
      */
@@ -143,19 +174,19 @@ public class ClientDAO {
     
     /**
      * Recherche des clients par nom ou prénom
-     * @param recherche Texte à rechercher
+     * @param terme Terme de recherche (nom ou prénom)
      * @return Liste des clients correspondants
      */
-    public List<Client> rechercherParNom(String recherche) {
+    public List<Client> rechercherParNomOuPrenom(String terme) {
         List<Client> clients = new ArrayList<>();
         String sql = "SELECT * FROM Client WHERE nom LIKE ? OR prenom LIKE ? ORDER BY nom, prenom";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            String pattern = "%" + recherche + "%";
-            pstmt.setString(1, pattern);
-            pstmt.setString(2, pattern);
+            String termeLike = "%" + terme + "%";
+            pstmt.setString(1, termeLike);
+            pstmt.setString(2, termeLike);
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -163,54 +194,106 @@ public class ClientDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des clients : " + e.getMessage());
+            System.err.println("Erreur lors de la recherche des clients par nom ou prénom : " + e.getMessage());
         }
         
         return clients;
     }
     
     /**
-     * Met à jour le solde du compte d'un client
-     * @param idClient Identifiant du client
-     * @param nouveauSolde Nouveau solde
-     * @return true si la mise à jour a réussi
+     * Recherche des clients par ville
+     * Cette méthode est désactivée car la colonne ville n'existe pas dans la table Client
+     * @param ville Ville de recherche
+     * @return Liste des clients correspondants
      */
-    public boolean mettreAJourSolde(int idClient, double nouveauSolde) {
-        String sql = "UPDATE Client SET solde_compte = ? WHERE id_client = ?";
+    public List<Client> rechercherParVille(String ville) {
+        // Cette méthode ne peut pas fonctionner car la colonne ville n'existe pas
+        System.err.println("Attention: La méthode rechercherParVille ne peut pas fonctionner car la colonne ville n'existe pas dans la table Client");
+        return new ArrayList<>();
+        /*
+        List<Client> clients = new ArrayList<>();
+        String sql = "SELECT * FROM Client WHERE ville = ? ORDER BY nom, prenom";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setDouble(1, nouveauSolde);
-            pstmt.setInt(2, idClient);
+            pstmt.setString(1, ville);
             
-            return pstmt.executeUpdate() > 0;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    clients.add(extraireClientDuResultSet(rs));
+                }
+            }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la mise à jour du solde : " + e.getMessage());
-            return false;
+            System.err.println("Erreur lors de la recherche des clients par ville : " + e.getMessage());
         }
+        
+        return clients;
+        */
     }
     
     /**
-     * Met à jour le nombre de pizzas achetées par un client
-     * @param idClient Identifiant du client
-     * @param nbPizzas Nouveau nombre de pizzas achetées
-     * @return true si la mise à jour a réussi
+     * Vérifie si l'email et le mot de passe correspondent à un client
+     * Cette méthode est désactivée car les colonnes email et mot_de_passe n'existent pas dans la table Client
+     * @param email Email du client
+     * @param motDePasse Mot de passe du client
+     * @return Le client si authentification réussie, null sinon
      */
-    public boolean mettreAJourNbPizzas(int idClient, int nbPizzas) {
-        String sql = "UPDATE Client SET nb_pizzas_achetees = ? WHERE id_client = ?";
+    public Client authentifier(String email, String motDePasse) {
+        // Cette méthode ne peut pas fonctionner car les colonnes email et mot_de_passe n'existent pas
+        System.err.println("Attention: La méthode authentifier ne peut pas fonctionner car les colonnes email et mot_de_passe n'existent pas dans la table Client");
+        return null;
+        /*
+        String sql = "SELECT * FROM Client WHERE email = ? AND mot_de_passe = ?";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setInt(1, nbPizzas);
-            pstmt.setInt(2, idClient);
+            pstmt.setString(1, email);
+            pstmt.setString(2, motDePasse);
             
-            return pstmt.executeUpdate() > 0;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return extraireClientDuResultSet(rs);
+                }
+            }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la mise à jour du nombre de pizzas : " + e.getMessage());
-            return false;
+            System.err.println("Erreur lors de l'authentification du client : " + e.getMessage());
         }
+        
+        return null;
+        */
+    }
+    
+    /**
+     * Vérifie si un email est déjà utilisé
+     * Cette méthode est désactivée car la colonne email n'existe pas dans la table Client
+     * @param email Email à vérifier
+     * @return true si l'email est déjà utilisé
+     */
+    public boolean emailExiste(String email) {
+        // Cette méthode ne peut pas fonctionner car la colonne email n'existe pas
+        System.err.println("Attention: La méthode emailExiste ne peut pas fonctionner car la colonne email n'existe pas dans la table Client");
+        return false;
+        /*
+        String sql = "SELECT COUNT(*) as count FROM Client WHERE email = ?";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, email);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count") > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la vérification de l'existence de l'email : " + e.getMessage());
+        }
+        
+        return false;
+        */
     }
     
     /**
@@ -226,34 +309,45 @@ public class ClientDAO {
         client.setPrenom(rs.getString("prenom"));
         client.setAdresse(rs.getString("adresse"));
         client.setTelephone(rs.getString("telephone"));
-        client.setSoldeCompte(rs.getDouble("solde_compte"));
-        client.setNbPizzasAchetees(rs.getInt("nb_pizzas_achetees"));
+        
+        // Ces colonnes existent dans le modèle mais pas forcément dans la table
+        // Traitement des colonnes qui existent dans la base
+        try {
+            client.setSoldeCompte(rs.getDouble("solde_compte"));
+        } catch (SQLException e) {
+            client.setSoldeCompte(0.0);
+        }
+        
+        try {
+            client.setNbPizzasAchetees(rs.getInt("nb_pizzas_achetees"));
+        } catch (SQLException e) {
+            client.setNbPizzasAchetees(0);
+        }
+        
+        // Ces colonnes ne sont pas dans la structure actuelle de la table
+        // Initialisation avec des valeurs par défaut
+        client.setVille("");
+        client.setEmail("");
+        client.setMotDePasse("");
+        
         return client;
     }
-    
-    /**
-     * Trouve le meilleur client (celui qui a dépensé le plus)
-     * @return Le meilleur client ou null si aucun
-     */
-    public Client trouverMeilleurClient() {
-        String sql = "SELECT c.*, SUM(dc.prix_unitaire * dc.quantite) AS montant_total " +
-                     "FROM Client c " +
-                     "JOIN Commande com ON c.id_client = com.id_client " +
-                     "JOIN DetailCommande dc ON com.id_commande = dc.id_commande " +
-                     "WHERE com.est_gratuite = FALSE " +
-                     "GROUP BY c.id_client, c.nom, c.prenom " +
-                     "ORDER BY montant_total DESC " +
-                     "LIMIT 1";
+
+    public String[] getColonnes() {
+        String sql = "SHOW COLUMNS FROM Client;";
         
         try (Connection conn = DatabaseConfig.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
             
-            if (rs.next()) {
-                return extraireClientDuResultSet(rs);
+            List<String> colonnes = new ArrayList<>();
+            while (rs.next()) {
+                colonnes.add(rs.getString("Field"));
             }
+            
+            return colonnes.toArray(new String[0]);
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche du meilleur client : " + e.getMessage());
+            System.err.println("Erreur lors de la récupération des colonnes : " + e.getMessage());
         }
         
         return null;

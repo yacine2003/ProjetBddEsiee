@@ -62,6 +62,13 @@ public class Pizza {
     }
     
     /**
+     * Vide la liste des ingrédients de la pizza
+     */
+    public void viderIngredients() {
+        ingredients.clear();
+    }
+    
+    /**
      * Calcule le prix d'une pizza selon sa taille
      * @param taille Taille de la pizza
      * @return Prix calculé

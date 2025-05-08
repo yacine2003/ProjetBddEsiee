@@ -80,7 +80,29 @@ public class PizzaDAO {
             pstmt.setDouble(2, pizza.getPrixBase());
             pstmt.setInt(3, pizza.getIdPizza());
             
-            return pstmt.executeUpdate() > 0;
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows > 0) {
+                // Mise à jour des ingrédients
+                // D'abord supprimer tous les ingrédients actuels
+                sql = "DELETE FROM CompositionPizza WHERE id_pizza = ?";
+                try (PreparedStatement pstmtDelete = conn.prepareStatement(sql)) {
+                    pstmtDelete.setInt(1, pizza.getIdPizza());
+                    pstmtDelete.executeUpdate();
+                }
+                
+                // Puis ajouter les nouveaux ingrédients
+                List<Ingredient> ingredients = pizza.getIngredients();
+                if (ingredients != null && !ingredients.isEmpty()) {
+                    for (Ingredient ingredient : ingredients) {
+                        ajouterIngredient(pizza.getIdPizza(), ingredient.getIdIngredient(), 1);
+                    }
+                }
+                
+                return true;
+            }
+            
+            return false;
         } catch (SQLException e) {
             System.err.println("Erreur lors de la mise à jour de la pizza : " + e.getMessage());
             return false;
@@ -174,12 +196,17 @@ public class PizzaDAO {
      */
     public List<Pizza> rechercherParNom(String nom) {
         List<Pizza> pizzas = new ArrayList<>();
-        String sql = "SELECT * FROM Pizza WHERE nom LIKE ? ORDER BY nom";
+        String sql = "SELECT DISTINCT p.* FROM Pizza p " +
+                     "LEFT JOIN CompositionPizza cp ON p.id_pizza = cp.id_pizza " +
+                     "LEFT JOIN Ingredient i ON cp.id_ingredient = i.id_ingredient " +
+                     "WHERE p.nom LIKE ? OR i.nom LIKE ? " +
+                     "ORDER BY p.nom";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, "%" + nom + "%");
+            pstmt.setString(2, "%" + nom + "%");
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -193,7 +220,7 @@ public class PizzaDAO {
                 chargerIngredients(pizza);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des pizzas par nom : " + e.getMessage());
+            System.err.println("Erreur lors de la recherche des pizzas par nom ou ingrédient : " + e.getMessage());
         }
         
         return pizzas;

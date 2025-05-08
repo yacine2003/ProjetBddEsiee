@@ -31,6 +31,7 @@
         </dependency>
         
         <!-- Java Standard Edition API -->
+        <!-- Note: Les classes Swing comme ImageIcon font partie du JDK standard -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

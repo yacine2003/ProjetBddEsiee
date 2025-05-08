@@ -10,6 +10,9 @@ import java.awt.event.WindowEvent;
 import fr.esiee.rapizz.dao.*;
 import fr.esiee.rapizz.model.*;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.io.File;
 /**
  * Fenêtre principale de l'application RaPizz
  */
@@ -426,12 +429,347 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // À implémenter : liste des pizzas, formulaire d'ajout/modification, etc.
-        JLabel label = new JLabel("Gestion des pizzas");
-        label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // Panneau de recherche en haut
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Rechercher");
+        JButton addButton = new JButton("Ajouter une pizza");
+        
+        searchPanel.add(new JLabel("🔍 Rechercher :"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        searchPanel.add(addButton);
+        
+        panel.add(searchPanel, BorderLayout.NORTH);
+        
+        // Panneau principal avec scroll pour les pizzas
+        JPanel pizzasPanel = new JPanel();
+        pizzasPanel.setLayout(new BoxLayout(pizzasPanel, BoxLayout.Y_AXIS));
+        
+        // Récupération des données
+        PizzaDAO pizzaDAO = new PizzaDAO();
+        TailleDAO tailleDAO = new TailleDAO();
+        
+        List<Pizza> pizzas = pizzaDAO.trouverTous();
+        List<Taille> tailles = tailleDAO.trouverTous();
+        
+        // Création d'un panneau pour chaque pizza
+        for (Pizza pizza : pizzas) {
+            // Panneau pour une pizza
+            JPanel pizzaPanel = new JPanel(new BorderLayout());
+            pizzaPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true)
+            ));
+            
+            // Trouver l'image correspondante basée sur le nom de la pizza
+            String imageName = trouverNomImagePizza(pizza.getNom());
+            ImageIcon imageIcon = chargerImagePizza(imageName);
+            
+            // Panneau d'image à gauche
+            JLabel imageLabel = new JLabel();
+            if (imageIcon != null) {
+                imageLabel.setIcon(imageIcon);
+            } else {
+                imageLabel.setText("Image non disponible");
+            }
+            imageLabel.setPreferredSize(new Dimension(200, 150));
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
+            
+            JPanel imagePanel = new JPanel(new BorderLayout());
+            imagePanel.add(imageLabel, BorderLayout.CENTER);
+            imagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 15));
+            
+            // Panneau d'informations à droite
+            JPanel infoPanel = new JPanel();
+            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+            
+            // Titre de la pizza
+            JLabel titleLabel = new JLabel(pizza.getNom());
+            titleLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+            titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            // Ingrédients
+            List<Ingredient> ingredients = pizza.getIngredients();
+            StringBuilder ingredientsStr = new StringBuilder("<html><b>Ingrédients :</b> ");
+            
+            if (ingredients != null && !ingredients.isEmpty()) {
+                for (int i = 0; i < ingredients.size(); i++) {
+                    ingredientsStr.append(ingredients.get(i).getNom());
+                    if (i < ingredients.size() - 1) {
+                        ingredientsStr.append(", ");
+                    }
+                }
+            } else {
+                ingredientsStr.append("Aucun ingrédient renseigné");
+            }
+            ingredientsStr.append("</html>");
+            
+            JLabel ingredientsLabel = new JLabel(ingredientsStr.toString());
+            ingredientsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            // Prix selon les tailles
+            JPanel prixPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            prixPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            prixPanel.add(new JLabel("<html><b>Prix de base :</b> " + String.format("%.2f€", pizza.getPrixBase()) + "</html>"));
+            
+            // Prix selon les tailles si elles existent
+            if (!tailles.isEmpty()) {
+                JPanel taillesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                taillesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                taillesPanel.add(new JLabel("<html><b>Prix par taille :</b></html>"));
+                
+                for (Taille taille : tailles) {
+                    double prix = pizza.calculerPrix(taille);
+                    taillesPanel.add(new JLabel(String.format("%s: %.2f€", taille.getLibelle(), prix)));
+                }
+                
+                infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+                infoPanel.add(taillesPanel);
+            }
+            
+            // Boutons d'action
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            JButton editButton = new JButton("Modifier");
+            JButton deleteButton = new JButton("Supprimer");
+            
+            buttonPanel.add(editButton);
+            buttonPanel.add(deleteButton);
+            
+            // Ajouter tous les composants au panneau d'info
+            infoPanel.add(titleLabel);
+            infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            infoPanel.add(ingredientsLabel);
+            infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            infoPanel.add(prixPanel);
+            infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            infoPanel.add(buttonPanel);
+            
+            // Ajout des deux panneaux au panneau de la pizza
+            pizzaPanel.add(imagePanel, BorderLayout.WEST);
+            pizzaPanel.add(infoPanel, BorderLayout.CENTER);
+            
+            // Ajouter le panneau de la pizza au panneau général
+            pizzasPanel.add(pizzaPanel);
+            pizzasPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            
+            // Gestion des événements pour les boutons
+            final Pizza currentPizza = pizza;
+            
+            // Action du bouton Modifier
+            editButton.addActionListener(e -> {
+                // Implémentation de la modification de pizza
+                JOptionPane.showMessageDialog(this, "Modification de la pizza " + currentPizza.getNom() + " à implémenter");
+            });
+            
+            // Action du bouton Supprimer
+            deleteButton.addActionListener(e -> {
+                int reponse = JOptionPane.showConfirmDialog(
+                    this,
+                    "Êtes-vous sûr de vouloir supprimer la pizza " + currentPizza.getNom() + " ?",
+                    "Confirmation de suppression",
+                    JOptionPane.YES_NO_OPTION
+                );
+                
+                if (reponse == JOptionPane.YES_OPTION) {
+                    boolean supprime = pizzaDAO.supprimer(currentPizza.getIdPizza());
+                    if (supprime) {
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "Pizza supprimée avec succès",
+                            "Suppression réussie",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                        
+                        // Rafraîchir le panneau
+                        refreshPizzaPanel();
+                    } else {
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "Erreur lors de la suppression de la pizza",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
+            });
+        }
+        
+        // Panneau avec défilement
+        JScrollPane scrollPane = new JScrollPane(pizzasPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        // Action du bouton de recherche
+        searchButton.addActionListener(e -> {
+            String termeRecherche = searchField.getText().trim();
+            
+            if (termeRecherche.isEmpty()) {
+                // Si le champ de recherche est vide, afficher toutes les pizzas
+                refreshPizzaPanel();
+                return;
+            }
+            
+            // Rechercher les pizzas par nom
+            List<Pizza> pizzasTrouvees = pizzaDAO.rechercherParNom(termeRecherche);
+            
+            if (pizzasTrouvees.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Aucune pizza trouvée pour la recherche : " + termeRecherche,
+                    "Recherche sans résultat",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+            
+            // Mettre à jour l'affichage avec les résultats
+            refreshPizzaPanel(pizzasTrouvees);
+        });
+        
+        // Recherche à la touche Entrée
+        searchField.addActionListener(e -> searchButton.doClick());
+        
+        // Action du bouton Ajouter
+        addButton.addActionListener(e -> {
+            // Créer une fenêtre d'ajout
+            JDialog fenetreAjout = new JDialog(this, "Ajouter une pizza", true);
+            fenetreAjout.setSize(400, 300);
+            fenetreAjout.setLocationRelativeTo(this);
+            fenetreAjout.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            
+            // Créer un panneau avec un GridLayout pour organiser les champs
+            JPanel panneauAjout = new JPanel(new GridLayout(6, 2, 5, 5));
+            panneauAjout.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            // Ajouter les champs pour chaque colonne existante
+            panneauAjout.add(new JLabel("Nom :"));
+            JTextField champNom = new JTextField();
+            panneauAjout.add(champNom);
+            
+            panneauAjout.add(new JLabel("Prénom :"));
+            JTextField champPrenom = new JTextField();
+            panneauAjout.add(champPrenom);
+            
+            panneauAjout.add(new JLabel("Adresse :"));
+            JTextField champAdresse = new JTextField();
+            panneauAjout.add(champAdresse);
+            
+            panneauAjout.add(new JLabel("Téléphone :"));
+            JTextField champTelephone = new JTextField();
+            panneauAjout.add(champTelephone);
+            
+            panneauAjout.add(new JLabel("Solde compte :"));
+            JTextField champSolde = new JTextField("0.0");
+            panneauAjout.add(champSolde);
+            
+            panneauAjout.add(new JLabel("Nb. pizzas achetées :"));
+            JTextField champNbPizzas = new JTextField("0");
+            panneauAjout.add(champNbPizzas);
+            
+            // Panneau pour les boutons
+            JPanel panneauBoutons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            
+            JButton boutonEnregistrer = new JButton("Enregistrer");
+            JButton boutonAnnuler = new JButton("Annuler");
+            
+            panneauBoutons.add(boutonEnregistrer);
+            panneauBoutons.add(boutonAnnuler);
+        });
         
         return panel;
+    }
+    
+    /**
+     * Rafraîchit le panneau des pizzas
+     */
+    private void refreshPizzaPanel() {
+        // Recréer le panneau avec toutes les pizzas
+        PizzaDAO pizzaDAO = new PizzaDAO();
+        List<Pizza> pizzas = pizzaDAO.trouverTous();
+        refreshPizzaPanel(pizzas);
+    }
+    
+    /**
+     * Rafraîchit le panneau des pizzas avec la liste fournie
+     * @param pizzas Liste de pizzas à afficher
+     */
+    private void refreshPizzaPanel(List<Pizza> pizzas) {
+        // Remplacer l'onglet des pizzas
+        tabbedPane.setComponentAt(1, createPizzaPanel());
+    }
+    
+    /**
+     * Trouve le nom du fichier image correspondant à une pizza
+     * @param nomPizza Nom de la pizza
+     * @return Nom du fichier d'image
+     */
+    private String trouverNomImagePizza(String nomPizza) {
+        // Correspondance entre noms de pizzas et noms de fichiers
+        String nomSansAccent = nomPizza.toLowerCase()
+            .replace("é", "e")
+            .replace("è", "e")
+            .replace("ê", "e")
+            .replace("ë", "e")
+            .replace("à", "a")
+            .replace("â", "a")
+            .replace("ô", "o")
+            .replace("ù", "u")
+            .replace("ü", "u")
+            .replace("ç", "c")
+            .replace(" ", "");
+        
+        // Mappages spécifiques pour certaines pizzas
+        if (nomSansAccent.contains("margarita") || nomSansAccent.contains("margherita")) {
+            return "margaritha";
+        } else if (nomSansAccent.contains("calzone")) {
+            return "calzone";
+        } else if (nomSansAccent.contains("haw") || nomSansAccent.contains("hawaii")) {
+            return "hawaienne";
+        } else if (nomSansAccent.contains("vege") || nomSansAccent.contains("vegetarienne")) {
+            return "vege";
+        } else if (nomSansAccent.contains("quatrefromages") || nomSansAccent.contains("4fromages")) {
+            return "quattreF";
+        } else if (nomSansAccent.contains("peperoni") || nomSansAccent.contains("pepperoni")) {
+            return "peperoni";
+        } else if (nomSansAccent.contains("reine")) {
+            return "reine";
+        }
+        
+        // Par défaut, on retourne le nom sans accent
+        return nomSansAccent;
+    }
+    
+    /**
+     * Charge une image de pizza à partir du dossier assets
+     * @param nomImage Nom de l'image (sans extension)
+     * @return ImageIcon redimensionnée ou null si l'image n'est pas trouvée
+     */
+    private ImageIcon chargerImagePizza(String nomImage) {
+        try {
+            // Essayer d'abord avec l'extension .jpg
+            File imageFile = new File("assets/" + nomImage + ".jpg");
+            if (!imageFile.exists()) {
+                // Essayer avec l'extension .jpeg
+                imageFile = new File("assets/" + nomImage + ".jpeg");
+            }
+            
+            if (imageFile.exists()) {
+                ImageIcon originalIcon = new ImageIcon(imageFile.getAbsolutePath());
+                Image image = originalIcon.getImage();
+                
+                // Redimensionner l'image à une taille raisonnable
+                Image resizedImage = image.getScaledInstance(180, 140, Image.SCALE_SMOOTH);
+                return new ImageIcon(resizedImage);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'image de pizza: " + e.getMessage());
+        }
+        
+        return null;
     }
     
     /**

@@ -10,9 +10,7 @@ public class Pizza {
     
     private int idPizza;
     private String nom;
-    private String description;
     private double prixBase;
-    private boolean estPersonnalisable;
     private List<Ingredient> ingredients;
     
     /**
@@ -25,28 +23,22 @@ public class Pizza {
     /**
      * Constructeur sans id
      * @param nom Nom de la pizza
-     * @param description Description de la pizza
-     * @param prixBase Prix de base (taille humaine)
-     * @param estPersonnalisable Indique si la pizza peut être personnalisée
+     * @param prixBase Prix de base
      */
-    public Pizza(String nom, String description, double prixBase, boolean estPersonnalisable) {
+    public Pizza(String nom, double prixBase) {
         this();
         this.nom = nom;
-        this.description = description;
         this.prixBase = prixBase;
-        this.estPersonnalisable = estPersonnalisable;
     }
     
     /**
      * Constructeur complet
      * @param idPizza Identifiant de la pizza
      * @param nom Nom de la pizza
-     * @param description Description de la pizza
-     * @param prixBase Prix de base (taille humaine)
-     * @param estPersonnalisable Indique si la pizza peut être personnalisée
+     * @param prixBase Prix de base
      */
-    public Pizza(int idPizza, String nom, String description, double prixBase, boolean estPersonnalisable) {
-        this(nom, description, prixBase, estPersonnalisable);
+    public Pizza(int idPizza, String nom, double prixBase) {
+        this(nom, prixBase);
         this.idPizza = idPizza;
     }
     
@@ -67,6 +59,13 @@ public class Pizza {
      */
     public boolean retirerIngredient(Ingredient ingredient) {
         return ingredients.remove(ingredient);
+    }
+    
+    /**
+     * Vide la liste des ingrédients de la pizza
+     */
+    public void viderIngredients() {
+        ingredients.clear();
     }
     
     /**
@@ -96,28 +95,12 @@ public class Pizza {
         this.nom = nom;
     }
     
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
     public double getPrixBase() {
         return prixBase;
     }
     
     public void setPrixBase(double prixBase) {
         this.prixBase = prixBase;
-    }
-    
-    public boolean isEstPersonnalisable() {
-        return estPersonnalisable;
-    }
-    
-    public void setEstPersonnalisable(boolean estPersonnalisable) {
-        this.estPersonnalisable = estPersonnalisable;
     }
     
     public List<Ingredient> getIngredients() {

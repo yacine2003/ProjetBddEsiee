@@ -1,5 +1,7 @@
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/RapizzApplication.java
+/Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/TestPizzaDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/controller/ClientController.java
+/Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/controller/PizzaController.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/ClientDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/CommandeDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/DetailCommandeDAO.java
@@ -7,7 +9,6 @@
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/LivraisonDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/LivreurDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/PizzaDAO.java
-/Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/RecetteDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/TailleDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/dao/VehiculeDAO.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Client.java
@@ -17,7 +18,6 @@
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Livraison.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Livreur.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Pizza.java
-/Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Recette.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Taille.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/model/Vehicule.java
 /Users/yacine/ESIEE/BDD/ProjetBddEsiee/src/main/java/fr/esiee/rapizz/util/DatabaseConfig.java

@@ -19,6 +19,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 /**
  * Fenêtre principale de l'application RaPizz
  */
@@ -501,7 +504,356 @@ public class MainFrame extends JFrame {
         
         // Action du bouton d'ajout
         addButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Fonctionnalité d'ajout à implémenter", "Info", JOptionPane.INFORMATION_MESSAGE);
+            // Création d'une fenêtre d'ajout de pizza
+            JDialog addPizzaDialog = new JDialog(this, "Ajouter une nouvelle pizza", true);
+            addPizzaDialog.setSize(600, 500);
+            addPizzaDialog.setLocationRelativeTo(this);
+            addPizzaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            
+            // Panneau principal avec BorderLayout
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            // Panneau de formulaire avec GridBagLayout pour plus de flexibilité
+            JPanel formPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            // Champ nom de la pizza
+            gbc.gridx = 0; gbc.gridy = 0;
+            formPanel.add(new JLabel("Nom de la pizza :"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            JTextField nameField = new JTextField(20);
+            formPanel.add(nameField, gbc);
+            
+            // Champ prix de base
+            gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+            formPanel.add(new JLabel("Prix de base (€) :"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            JTextField priceField = new JTextField(20);
+            formPanel.add(priceField, gbc);
+            
+            // Sélection d'image
+            gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+            formPanel.add(new JLabel("Image :"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            
+            JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            JTextField imagePathField = new JTextField(15);
+            imagePathField.setEditable(false);
+            JButton browseButton = new JButton("Parcourir...");
+            imagePanel.add(imagePathField);
+            imagePanel.add(Box.createHorizontalStrut(5));
+            imagePanel.add(browseButton);
+            formPanel.add(imagePanel, gbc);
+            
+            // Action du bouton Parcourir
+            browseButton.addActionListener(imgEvent -> {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Sélectionner une image de pizza");
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                    @Override
+                    public boolean accept(File f) {
+                        if (f.isDirectory()) return true;
+                        String name = f.getName().toLowerCase();
+                        return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
+                               name.endsWith(".png") || name.endsWith(".gif");
+                    }
+                    
+                    @Override
+                    public String getDescription() {
+                        return "Images (*.jpg, *.jpeg, *.png, *.gif)";
+                    }
+                });
+                
+                int result = fileChooser.showOpenDialog(addPizzaDialog);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    imagePathField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            
+            // Sélection des ingrédients
+            gbc.gridx = 0; gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+            formPanel.add(new JLabel("Ingrédients :"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 1.0;
+            
+            // Récupération de tous les ingrédients
+            IngredientDAO ingredientDAO = new IngredientDAO();
+            List<Ingredient> allIngredients = ingredientDAO.trouverTous();
+            
+            // Panneau avec JCheckBox pour sélectionner les ingrédients
+            JPanel ingredientsPanel = new JPanel();
+            ingredientsPanel.setLayout(new BoxLayout(ingredientsPanel, BoxLayout.Y_AXIS));
+            ingredientsPanel.setBorder(BorderFactory.createTitledBorder("Sélectionnez les ingrédients"));
+            
+            // Map pour stocker les checkboxes par ingrédient
+            Map<Ingredient, JCheckBox> ingredientCheckboxes = new HashMap<>();
+            
+            for (Ingredient ingredient : allIngredients) {
+                JCheckBox checkBox = new JCheckBox(ingredient.getNom());
+                checkBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+                ingredientCheckboxes.put(ingredient, checkBox);
+                ingredientsPanel.add(checkBox);
+            }
+            
+            // Bouton pour ajouter un nouvel ingrédient
+            JButton addIngredientButton = new JButton("+ Nouvel ingrédient");
+            addIngredientButton.setPreferredSize(new Dimension(150, 30));
+            ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            ingredientsPanel.add(addIngredientButton);
+            
+            // Panneau de défilement pour les ingrédients
+            JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsPanel);
+            ingredientsScrollPane.setPreferredSize(new Dimension(300, 200));
+            ingredientsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            formPanel.add(ingredientsScrollPane, gbc);
+            
+            // Action du bouton pour ajouter un nouvel ingrédient
+            addIngredientButton.addActionListener(event -> {
+                JDialog addIngredientDialog = new JDialog(addPizzaDialog, "Ajouter un ingrédient", true);
+                addIngredientDialog.setSize(350, 200);
+                addIngredientDialog.setLocationRelativeTo(addPizzaDialog);
+                
+                JPanel ingPanel = new JPanel(new GridBagLayout());
+                GridBagConstraints ingGbc = new GridBagConstraints();
+                ingGbc.insets = new Insets(10, 10, 10, 10);
+                ingGbc.anchor = GridBagConstraints.WEST;
+                
+                ingGbc.gridx = 0; ingGbc.gridy = 0;
+                ingPanel.add(new JLabel("Nom de l'ingrédient :"), ingGbc);
+                ingGbc.gridx = 1; ingGbc.fill = GridBagConstraints.HORIZONTAL; ingGbc.weightx = 1.0;
+                JTextField ingNameField = new JTextField(15);
+                ingPanel.add(ingNameField, ingGbc);
+                
+                ingGbc.gridx = 0; ingGbc.gridy = 1; ingGbc.fill = GridBagConstraints.NONE; ingGbc.weightx = 0;
+                ingPanel.add(new JLabel("Stock initial :"), ingGbc);
+                ingGbc.gridx = 1; ingGbc.fill = GridBagConstraints.HORIZONTAL; ingGbc.weightx = 1.0;
+                JTextField stockField = new JTextField("100");
+                ingPanel.add(stockField, ingGbc);
+                
+                JPanel ingButtonPanel = new JPanel(new FlowLayout());
+                JButton ingSaveButton = new JButton("Ajouter");
+                JButton ingCancelButton = new JButton("Annuler");
+                ingButtonPanel.add(ingSaveButton);
+                ingButtonPanel.add(ingCancelButton);
+                
+                JPanel ingMainPanel = new JPanel(new BorderLayout());
+                ingMainPanel.add(ingPanel, BorderLayout.CENTER);
+                ingMainPanel.add(ingButtonPanel, BorderLayout.SOUTH);
+                
+                addIngredientDialog.setContentPane(ingMainPanel);
+                
+                // Action du bouton de sauvegarde d'ingrédient
+                ingSaveButton.addActionListener(ingEvent -> {
+                    try {
+                        String nomIngredient = ingNameField.getText().trim();
+                        int stockInitial = Integer.parseInt(stockField.getText().trim());
+                        
+                        if (nomIngredient.isEmpty()) {
+                            JOptionPane.showMessageDialog(addIngredientDialog, 
+                                "Veuillez saisir un nom d'ingrédient", 
+                                "Champ requis", 
+                                JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        
+                        // Créer et sauvegarder le nouvel ingrédient
+                        Ingredient newIngredient = new Ingredient(nomIngredient, stockInitial);
+                        if (ingredientDAO.inserer(newIngredient)) {
+                            // Ajouter l'ingrédient à la liste et la checkbox
+                            JCheckBox newCheckBox = new JCheckBox(newIngredient.getNom());
+                            newCheckBox.setSelected(true); // Sélectionner par défaut
+                            newCheckBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+                            ingredientCheckboxes.put(newIngredient, newCheckBox);
+                            
+                            // Ajouter avant le bouton
+                            ingredientsPanel.remove(addIngredientButton);
+                            ingredientsPanel.remove(ingredientsPanel.getComponentCount() - 1); // Retirer l'espacement
+                            ingredientsPanel.add(newCheckBox);
+                            ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                            ingredientsPanel.add(addIngredientButton);
+                            
+                            // Rafraîchir l'affichage
+                            ingredientsPanel.revalidate();
+                            ingredientsPanel.repaint();
+                            
+                            addIngredientDialog.dispose();
+                            
+                            JOptionPane.showMessageDialog(addPizzaDialog, 
+                                "Ingrédient '" + nomIngredient + "' ajouté avec succès !", 
+                                "Succès", 
+                                JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(addIngredientDialog, 
+                                "Erreur lors de l'ajout de l'ingrédient", 
+                                "Erreur", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(addIngredientDialog, 
+                            "Veuillez saisir un nombre valide pour le stock", 
+                            "Erreur de format", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+                
+                // Action du bouton d'annulation d'ingrédient
+                ingCancelButton.addActionListener(ingEvent -> addIngredientDialog.dispose());
+                
+                addIngredientDialog.setVisible(true);
+            });
+            
+            // Panneau pour les boutons principaux
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            JButton saveButton = new JButton("Enregistrer la pizza");
+            JButton cancelButton = new JButton("Annuler");
+            
+            saveButton.setPreferredSize(new Dimension(150, 35));
+            cancelButton.setPreferredSize(new Dimension(100, 35));
+            
+            buttonPanel.add(saveButton);
+            buttonPanel.add(cancelButton);
+            
+            // Ajout des panneaux à la fenêtre
+            mainPanel.add(formPanel, BorderLayout.CENTER);
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            
+            addPizzaDialog.setContentPane(mainPanel);
+            
+            // Action du bouton d'enregistrement de pizza
+            saveButton.addActionListener(event -> {
+                try {
+                    String nomPizza = nameField.getText().trim();
+                    String prixText = priceField.getText().trim().replace(',', '.');
+                    String imagePath = imagePathField.getText().trim();
+                    
+                    // Validation des champs
+                    if (nomPizza.isEmpty()) {
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Veuillez saisir un nom pour la pizza", 
+                            "Champ requis", 
+                            JOptionPane.WARNING_MESSAGE);
+                        nameField.requestFocus();
+                        return;
+                    }
+                    
+                    if (prixText.isEmpty()) {
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Veuillez saisir un prix pour la pizza", 
+                            "Champ requis", 
+                            JOptionPane.WARNING_MESSAGE);
+                        priceField.requestFocus();
+                        return;
+                    }
+                    
+                    double prixBase;
+                    try {
+                        prixBase = Double.parseDouble(prixText);
+                        if (prixBase <= 0) {
+                            throw new NumberFormatException("Le prix doit être positif");
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Veuillez saisir un prix valide (ex: 9.99)", 
+                            "Erreur de format", 
+                            JOptionPane.ERROR_MESSAGE);
+                        priceField.requestFocus();
+                        return;
+                    }
+                    
+                    // Vérifier qu'au moins un ingrédient est sélectionné
+                    boolean hasIngredients = false;
+                    for (JCheckBox checkBox : ingredientCheckboxes.values()) {
+                        if (checkBox.isSelected()) {
+                            hasIngredients = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!hasIngredients) {
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Veuillez sélectionner au moins un ingrédient", 
+                            "Ingrédients requis", 
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    
+                    // Créer la nouvelle pizza
+                    Pizza nouvellePizza = new Pizza(nomPizza, prixBase);
+                    
+                    // Ajouter les ingrédients sélectionnés
+                    for (Map.Entry<Ingredient, JCheckBox> entry : ingredientCheckboxes.entrySet()) {
+                        if (entry.getValue().isSelected()) {
+                            nouvellePizza.ajouterIngredient(entry.getKey());
+                        }
+                    }
+                    
+                    // Sauvegarder la pizza dans la base de données
+                    PizzaDAO pizzaDAO = new PizzaDAO();
+                    boolean success = pizzaDAO.inserer(nouvellePizza);
+                    
+                    if (success) {
+                        // Si une image a été sélectionnée, la copier dans le dossier assets
+                        if (!imagePath.isEmpty()) {
+                            try {
+                                File sourceFile = new File(imagePath);
+                                String fileName = sourceFile.getName();
+                                String extension = fileName.substring(fileName.lastIndexOf('.'));
+                                
+                                // Déterminer le nom du fichier de destination basé sur le nom de la pizza
+                                String destinationFileName = trouverNomImagePizza(nomPizza) + extension;
+                                
+                                // Créer le dossier assets s'il n'existe pas
+                                File assetsDir = new File("assets");
+                                if (!assetsDir.exists()) {
+                                    assetsDir.mkdir();
+                                }
+                                
+                                // Copier le fichier
+                                File destinationFile = new File("assets/" + destinationFileName);
+                                java.nio.file.Files.copy(
+                                    sourceFile.toPath(),
+                                    destinationFile.toPath(),
+                                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                );
+                                
+                                System.out.println("Image copiée vers : " + destinationFile.getAbsolutePath());
+                            } catch (Exception ex) {
+                                System.err.println("Erreur lors de la copie de l'image : " + ex.getMessage());
+                                // On continue même si l'image n'a pas pu être copiée
+                            }
+                        }
+                        
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Pizza '" + nomPizza + "' ajoutée avec succès !", 
+                            "Succès", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Rafraîchir l'affichage des pizzas
+                        chargerPizzasDansPanel(pizzasPanel, null);
+                        
+                        addPizzaDialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(addPizzaDialog, 
+                            "Erreur lors de l'ajout de la pizza", 
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(addPizzaDialog, 
+                        "Erreur inattendue : " + ex.getMessage(), 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            });
+            
+            // Action du bouton d'annulation
+            cancelButton.addActionListener(event -> addPizzaDialog.dispose());
+            
+            addPizzaDialog.setVisible(true);
         });
 
         return panel;
@@ -642,7 +994,412 @@ public class MainFrame extends JFrame {
                 
                 // Action du bouton Modifier
                 editButton.addActionListener(e -> {
-                    JOptionPane.showMessageDialog(this, "Fonctionnalité de modification à implémenter", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    // Création d'une fenêtre de modification de pizza
+                    JDialog editPizzaDialog = new JDialog(this, "Modifier la pizza : " + currentPizza.getNom(), true);
+                    editPizzaDialog.setSize(600, 500);
+                    editPizzaDialog.setLocationRelativeTo(this);
+                    editPizzaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    
+                    // Panneau principal avec BorderLayout
+                    JPanel mainPanel = new JPanel(new BorderLayout());
+                    mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+                    
+                    // Panneau de formulaire avec GridBagLayout
+                    JPanel formPanel = new JPanel(new GridBagLayout());
+                    GridBagConstraints gbc = new GridBagConstraints();
+                    gbc.insets = new Insets(5, 5, 5, 5);
+                    gbc.anchor = GridBagConstraints.WEST;
+                    
+                    // Champ nom de la pizza (prérempli)
+                    gbc.gridx = 0; gbc.gridy = 0;
+                    formPanel.add(new JLabel("Nom de la pizza :"), gbc);
+                    gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+                    JTextField nameField = new JTextField(currentPizza.getNom(), 20);
+                    formPanel.add(nameField, gbc);
+                    
+                    // Champ prix de base (prérempli)
+                    gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+                    formPanel.add(new JLabel("Prix de base (€) :"), gbc);
+                    gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+                    JTextField priceField = new JTextField(String.format("%.2f", currentPizza.getPrixBase()), 20);
+                    formPanel.add(priceField, gbc);
+                    
+                    // Sélection d'image
+                    gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+                    formPanel.add(new JLabel("Image :"), gbc);
+                    gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+                    
+                    JPanel editImagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                    JTextField imagePathField = new JTextField(15);
+                    imagePathField.setEditable(false);
+                    JButton browseButton = new JButton("Changer...");
+                    JButton removeImageButton = new JButton("Supprimer image");
+                    editImagePanel.add(imagePathField);
+                    editImagePanel.add(Box.createHorizontalStrut(5));
+                    editImagePanel.add(browseButton);
+                    editImagePanel.add(Box.createHorizontalStrut(5));
+                    editImagePanel.add(removeImageButton);
+                    formPanel.add(editImagePanel, gbc);
+
+                    // Afficher l'image actuelle si elle existe
+                    String currentImageName = trouverNomImagePizza(currentPizza.getNom());
+                    File currentImageFile = new File("assets/" + currentImageName + ".jpg");
+                    if (!currentImageFile.exists()) {
+                        currentImageFile = new File("assets/" + currentImageName + ".jpeg");
+                    }
+                    if (currentImageFile.exists()) {
+                        imagePathField.setText("Image actuelle : " + currentImageFile.getName());
+                    }
+                    
+                    // Action du bouton Parcourir
+                    browseButton.addActionListener(imgEvent -> {
+                        JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setDialogTitle("Sélectionner une nouvelle image");
+                        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                            @Override
+                            public boolean accept(File f) {
+                                if (f.isDirectory()) return true;
+                                String name = f.getName().toLowerCase();
+                                return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
+                                       name.endsWith(".png") || name.endsWith(".gif");
+                            }
+                            
+                            @Override
+                            public String getDescription() {
+                                return "Images (*.jpg, *.jpeg, *.png, *.gif)";
+                            }
+                        });
+                        
+                        int result = fileChooser.showOpenDialog(editPizzaDialog);
+                        if (result == JFileChooser.APPROVE_OPTION) {
+                            File selectedFile = fileChooser.getSelectedFile();
+                            imagePathField.setText(selectedFile.getAbsolutePath());
+                        }
+                    });
+                    
+                    // Action du bouton Supprimer image
+                    removeImageButton.addActionListener(imgEvent -> {
+                        imagePathField.setText("");
+                    });
+                    
+                    // Sélection des ingrédients
+                    gbc.gridx = 0; gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+                    formPanel.add(new JLabel("Ingrédients :"), gbc);
+                    gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 1.0;
+                    
+                    // Récupération de tous les ingrédients
+                    IngredientDAO ingredientDAO = new IngredientDAO();
+                    List<Ingredient> allIngredients = ingredientDAO.trouverTous();
+                    
+                    // Panneau avec JCheckBox pour sélectionner les ingrédients
+                    JPanel ingredientsPanel = new JPanel();
+                    ingredientsPanel.setLayout(new BoxLayout(ingredientsPanel, BoxLayout.Y_AXIS));
+                    ingredientsPanel.setBorder(BorderFactory.createTitledBorder("Sélectionnez les ingrédients"));
+                    
+                    // Map pour stocker les checkboxes par ingrédient
+                    Map<Ingredient, JCheckBox> ingredientCheckboxes = new HashMap<>();
+                    
+                    // Récupérer les ingrédients actuels de la pizza
+                    List<Ingredient> currentIngredients = currentPizza.getIngredients();
+                    
+                    for (Ingredient ingredient : allIngredients) {
+                        JCheckBox checkBox = new JCheckBox(ingredient.getNom());
+                        checkBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+                        
+                        // Présélectionner si l'ingrédient fait partie de la pizza
+                        if (currentIngredients != null) {
+                            for (Ingredient pizzaIngredient : currentIngredients) {
+                                if (pizzaIngredient.getIdIngredient() == ingredient.getIdIngredient()) {
+                                    checkBox.setSelected(true);
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        ingredientCheckboxes.put(ingredient, checkBox);
+                        ingredientsPanel.add(checkBox);
+                    }
+                    
+                    // Bouton pour ajouter un nouvel ingrédient
+                    JButton addIngredientButton = new JButton("+ Nouvel ingrédient");
+                    addIngredientButton.setPreferredSize(new Dimension(150, 30));
+                    ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                    ingredientsPanel.add(addIngredientButton);
+                    
+                    // Panneau de défilement pour les ingrédients
+                    JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsPanel);
+                    ingredientsScrollPane.setPreferredSize(new Dimension(300, 200));
+                    ingredientsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                    formPanel.add(ingredientsScrollPane, gbc);
+                    
+                    // Action du bouton pour ajouter un nouvel ingrédient
+                    addIngredientButton.addActionListener(event -> {
+                        JDialog addIngredientDialog = new JDialog(editPizzaDialog, "Ajouter un ingrédient", true);
+                        addIngredientDialog.setSize(350, 200);
+                        addIngredientDialog.setLocationRelativeTo(editPizzaDialog);
+                        
+                        JPanel ingPanel = new JPanel(new GridBagLayout());
+                        GridBagConstraints ingGbc = new GridBagConstraints();
+                        ingGbc.insets = new Insets(10, 10, 10, 10);
+                        ingGbc.anchor = GridBagConstraints.WEST;
+                        
+                        ingGbc.gridx = 0; ingGbc.gridy = 0;
+                        ingPanel.add(new JLabel("Nom de l'ingrédient :"), ingGbc);
+                        ingGbc.gridx = 1; ingGbc.fill = GridBagConstraints.HORIZONTAL; ingGbc.weightx = 1.0;
+                        JTextField ingNameField = new JTextField(15);
+                        ingPanel.add(ingNameField, ingGbc);
+                        
+                        ingGbc.gridx = 0; ingGbc.gridy = 1; ingGbc.fill = GridBagConstraints.NONE; ingGbc.weightx = 0;
+                        ingPanel.add(new JLabel("Stock initial :"), ingGbc);
+                        ingGbc.gridx = 1; ingGbc.fill = GridBagConstraints.HORIZONTAL; ingGbc.weightx = 1.0;
+                        JTextField stockField = new JTextField("100");
+                        ingPanel.add(stockField, ingGbc);
+                        
+                        JPanel ingButtonPanel = new JPanel(new FlowLayout());
+                        JButton ingSaveButton = new JButton("Ajouter");
+                        JButton ingCancelButton = new JButton("Annuler");
+                        ingButtonPanel.add(ingSaveButton);
+                        ingButtonPanel.add(ingCancelButton);
+                        
+                        JPanel ingMainPanel = new JPanel(new BorderLayout());
+                        ingMainPanel.add(ingPanel, BorderLayout.CENTER);
+                        ingMainPanel.add(ingButtonPanel, BorderLayout.SOUTH);
+                        
+                        addIngredientDialog.setContentPane(ingMainPanel);
+                        
+                        // Action du bouton de sauvegarde d'ingrédient
+                        ingSaveButton.addActionListener(ingEvent -> {
+                            try {
+                                String nomIngredient = ingNameField.getText().trim();
+                                int stockInitial = Integer.parseInt(stockField.getText().trim());
+                                
+                                if (nomIngredient.isEmpty()) {
+                                    JOptionPane.showMessageDialog(addIngredientDialog, 
+                                        "Veuillez saisir un nom d'ingrédient", 
+                                        "Champ requis", 
+                                        JOptionPane.WARNING_MESSAGE);
+                                    return;
+                                }
+                                
+                                // Créer et sauvegarder le nouvel ingrédient
+                                Ingredient newIngredient = new Ingredient(nomIngredient, stockInitial);
+                                if (ingredientDAO.inserer(newIngredient)) {
+                                    // Ajouter l'ingrédient à la liste et la checkbox
+                                    JCheckBox newCheckBox = new JCheckBox(newIngredient.getNom());
+                                    newCheckBox.setSelected(true); // Sélectionner par défaut
+                                    newCheckBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+                                    ingredientCheckboxes.put(newIngredient, newCheckBox);
+                                    
+                                    // Ajouter avant le bouton
+                                    ingredientsPanel.remove(addIngredientButton);
+                                    ingredientsPanel.remove(ingredientsPanel.getComponentCount() - 1); // Retirer l'espacement
+                                    ingredientsPanel.add(newCheckBox);
+                                    ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                                    ingredientsPanel.add(addIngredientButton);
+                                    
+                                    // Rafraîchir l'affichage
+                                    ingredientsPanel.revalidate();
+                                    ingredientsPanel.repaint();
+                                    
+                                    addIngredientDialog.dispose();
+                                    
+                                    JOptionPane.showMessageDialog(editPizzaDialog, 
+                                        "Ingrédient '" + nomIngredient + "' ajouté avec succès !", 
+                                        "Succès", 
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(addIngredientDialog, 
+                                        "Erreur lors de l'ajout de l'ingrédient", 
+                                        "Erreur", 
+                                        JOptionPane.ERROR_MESSAGE);
+                                }
+                            } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(addIngredientDialog, 
+                                    "Veuillez saisir un nombre valide pour le stock", 
+                                    "Erreur de format", 
+                                    JOptionPane.ERROR_MESSAGE);
+                            }
+                        });
+                        
+                        // Action du bouton d'annulation d'ingrédient
+                        ingCancelButton.addActionListener(ingEvent -> addIngredientDialog.dispose());
+                        
+                        addIngredientDialog.setVisible(true);
+                    });
+                    
+                    // Panneau pour les boutons principaux
+                    JPanel editButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+                    JButton saveButton = new JButton("Enregistrer les modifications");
+                    JButton cancelButton = new JButton("Annuler");
+                    
+                    saveButton.setPreferredSize(new Dimension(200, 35));
+                    cancelButton.setPreferredSize(new Dimension(100, 35));
+                    
+                    editButtonPanel.add(saveButton);
+                    editButtonPanel.add(cancelButton);
+                    
+                    // Ajout des panneaux à la fenêtre
+                    mainPanel.add(formPanel, BorderLayout.CENTER);
+                    mainPanel.add(editButtonPanel, BorderLayout.SOUTH);
+                    
+                    editPizzaDialog.setContentPane(mainPanel);
+                    
+                    // Action du bouton d'enregistrement des modifications
+                    saveButton.addActionListener(event -> {
+                        try {
+                            String nomPizza = nameField.getText().trim();
+                            String prixText = priceField.getText().trim().replace(',', '.');
+                            String imagePath = imagePathField.getText().trim();
+                            
+                            // Validation des champs
+                            if (nomPizza.isEmpty()) {
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Veuillez saisir un nom pour la pizza", 
+                                    "Champ requis", 
+                                    JOptionPane.WARNING_MESSAGE);
+                                nameField.requestFocus();
+                                return;
+                            }
+                            
+                            if (prixText.isEmpty()) {
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Veuillez saisir un prix pour la pizza", 
+                                    "Champ requis", 
+                                    JOptionPane.WARNING_MESSAGE);
+                                priceField.requestFocus();
+                                return;
+                            }
+                            
+                            double prixBase;
+                            try {
+                                prixBase = Double.parseDouble(prixText);
+                                if (prixBase <= 0) {
+                                    throw new NumberFormatException("Le prix doit être positif");
+                                }
+                            } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Veuillez saisir un prix valide (ex: 9.99)", 
+                                    "Erreur de format", 
+                                    JOptionPane.ERROR_MESSAGE);
+                                priceField.requestFocus();
+                                return;
+                            }
+                            
+                            // Vérifier qu'au moins un ingrédient est sélectionné
+                            boolean hasIngredients = false;
+                            for (JCheckBox checkBox : ingredientCheckboxes.values()) {
+                                if (checkBox.isSelected()) {
+                                    hasIngredients = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!hasIngredients) {
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Veuillez sélectionner au moins un ingrédient", 
+                                    "Ingrédients requis", 
+                                    JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            
+                            // Mettre à jour les propriétés de la pizza
+                            currentPizza.setNom(nomPizza);
+                            currentPizza.setPrixBase(prixBase);
+                            
+                            // Mettre à jour les ingrédients
+                            currentPizza.viderIngredients();
+                            for (Map.Entry<Ingredient, JCheckBox> entry : ingredientCheckboxes.entrySet()) {
+                                if (entry.getValue().isSelected()) {
+                                    currentPizza.ajouterIngredient(entry.getKey());
+                                }
+                            }
+                            
+                            // Sauvegarder la pizza modifiée dans la base de données
+                            PizzaDAO editPizzaDAO = new PizzaDAO();
+                            boolean success = editPizzaDAO.mettreAJour(currentPizza);
+                            
+                            if (success) {
+                                // Gestion de l'image
+                                if (!imagePath.isEmpty() && !imagePath.startsWith("Image actuelle")) {
+                                    // Nouvelle image sélectionnée
+                                    try {
+                                        File sourceFile = new File(imagePath);
+                                        String fileName = sourceFile.getName();
+                                        String extension = fileName.substring(fileName.lastIndexOf('.'));
+                                        
+                                        // Déterminer le nom du fichier de destination
+                                        String destinationFileName = trouverNomImagePizza(nomPizza) + extension;
+                                        
+                                        // Créer le dossier assets s'il n'existe pas
+                                        File assetsDir = new File("assets");
+                                        if (!assetsDir.exists()) {
+                                            assetsDir.mkdir();
+                                        }
+                                        
+                                        // Supprimer l'ancienne image si elle existe
+                                        File oldImageJpg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpg");
+                                        File oldImageJpeg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpeg");
+                                        if (oldImageJpg.exists()) oldImageJpg.delete();
+                                        if (oldImageJpeg.exists()) oldImageJpeg.delete();
+                                        
+                                        // Copier la nouvelle image
+                                        File destinationFile = new File("assets/" + destinationFileName);
+                                        java.nio.file.Files.copy(
+                                            sourceFile.toPath(),
+                                            destinationFile.toPath(),
+                                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                        );
+                                        
+                                        System.out.println("Image mise à jour : " + destinationFile.getAbsolutePath());
+                                    } catch (Exception ex) {
+                                        System.err.println("Erreur lors de la mise à jour de l'image : " + ex.getMessage());
+                                    }
+                                } else if (imagePath.isEmpty()) {
+                                    // Supprimer l'image si le champ est vide
+                                    try {
+                                        File oldImageJpg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpg");
+                                        File oldImageJpeg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpeg");
+                                        if (oldImageJpg.exists()) {
+                                            oldImageJpg.delete();
+                                            System.out.println("Ancienne image supprimée");
+                                        }
+                                        if (oldImageJpeg.exists()) {
+                                            oldImageJpeg.delete();
+                                            System.out.println("Ancienne image supprimée");
+                                        }
+                                    } catch (Exception ex) {
+                                        System.err.println("Erreur lors de la suppression de l'image : " + ex.getMessage());
+                                    }
+                                }
+                                
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Pizza '" + nomPizza + "' modifiée avec succès !", 
+                                    "Succès", 
+                                    JOptionPane.INFORMATION_MESSAGE);
+                                
+                                // Rafraîchir l'affichage des pizzas
+                                chargerPizzasDansPanel(pizzasPanel, query);
+                                
+                                editPizzaDialog.dispose();
+                            } else {
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Erreur lors de la modification de la pizza", 
+                                    "Erreur", 
+                                    JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(editPizzaDialog, 
+                                "Erreur inattendue : " + ex.getMessage(), 
+                                "Erreur", 
+                                JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                        }
+                    });
+                    
+                    // Action du bouton d'annulation
+                    cancelButton.addActionListener(event -> editPizzaDialog.dispose());
+                    
+                    editPizzaDialog.setVisible(true);
                 });
                 
                 // Bouton Supprimer

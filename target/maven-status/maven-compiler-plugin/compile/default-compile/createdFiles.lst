@@ -6,6 +6,7 @@ fr/esiee/rapizz/model/Taille.class
 fr/esiee/rapizz/RapizzApplication.class
 fr/esiee/rapizz/model/Pizza.class
 fr/esiee/rapizz/model/Livreur.class
+fr/esiee/rapizz/view/MainFrame$3.class
 fr/esiee/rapizz/controller/ClientController.class
 fr/esiee/rapizz/model/Vehicule.class
 fr/esiee/rapizz/model/DetailCommande.class
@@ -20,6 +21,7 @@ fr/esiee/rapizz/dao/TailleDAO.class
 fr/esiee/rapizz/model/Ingredient.class
 fr/esiee/rapizz/dao/LivreurDAO.class
 fr/esiee/rapizz/dao/DetailCommandeDAO.class
+fr/esiee/rapizz/view/MainFrame$4.class
 fr/esiee/rapizz/model/Commande$Statut.class
 fr/esiee/rapizz/dao/CommandeDAO.class
 fr/esiee/rapizz/controller/PizzaController.class

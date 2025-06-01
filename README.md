@@ -33,6 +33,8 @@ mvn clean compile
 mvn exec:java -Dexec.mainClass="fr.esiee.rapizz.RapizzApplication"
 ```
 
+L'application s'ouvre avec une **page d'accueil élégante** présentant le titre RaPizz. Cliquez sur "Accéder à l'Application" pour accéder aux fonctionnalités principales.
+
 ## ✨ Fonctionnalités
 
 L'application comprend 5 modules :
@@ -78,6 +80,8 @@ src/main/java/fr/esiee/rapizz/
 ├── model/                          # Modèles (Client, Pizza, etc.)
 ├── dao/                           # Accès données
 ├── view/                          # Interface Swing
+│   ├── WelcomeFrame.java          # Page d'accueil
+│   └── MainFrame.java             # Application principale
 └── util/                          # Configuration DB
 ```
 

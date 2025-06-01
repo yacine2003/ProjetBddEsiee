@@ -3552,12 +3552,383 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // À implémenter : affichage des différentes statistiques demandées
-        JLabel label = new JLabel("Statistiques");
-        label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // Titre principal
+        JLabel titleLabel = new JLabel("📊 Tableau de Bord - Statistiques RaPizz");
+        titleLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        panel.add(titleLabel, BorderLayout.NORTH);
+        
+        // Panneau principal avec scroll
+        JPanel mainStatsPanel = new JPanel();
+        mainStatsPanel.setLayout(new BoxLayout(mainStatsPanel, BoxLayout.Y_AXIS));
+        
+        // Bouton de rafraîchissement
+        JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton refreshButton = new JButton("🔄 Actualiser les statistiques");
+        refreshButton.setPreferredSize(new Dimension(200, 30));
+        refreshPanel.add(refreshButton);
+        mainStatsPanel.add(refreshPanel);
+        
+        // Section 1: Statistiques générales
+        mainStatsPanel.add(creerSectionStatistiquesGenerales());
+        mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+        // Section 2: Statistiques des commandes
+        mainStatsPanel.add(creerSectionStatistiquesCommandes());
+        mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+        // Section 3: Statistiques des livraisons
+        mainStatsPanel.add(creerSectionStatistiquesLivraisons());
+        mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+        // Section 4: Top des pizzas
+        mainStatsPanel.add(creerSectionTopPizzas());
+        mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+        // Section 5: Statistiques des clients
+        mainStatsPanel.add(creerSectionStatistiquesClients());
+        
+        // Action du bouton de rafraîchissement
+        refreshButton.addActionListener(e -> {
+            // Recharger toutes les statistiques
+            mainStatsPanel.removeAll();
+            
+            // Recréer le bouton de rafraîchissement
+            JPanel newRefreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            JButton newRefreshButton = new JButton("🔄 Actualiser les statistiques");
+            newRefreshButton.setPreferredSize(new Dimension(200, 30));
+            newRefreshPanel.add(newRefreshButton);
+            mainStatsPanel.add(newRefreshPanel);
+            
+            // Recréer toutes les sections
+            mainStatsPanel.add(creerSectionStatistiquesGenerales());
+            mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            mainStatsPanel.add(creerSectionStatistiquesCommandes());
+            mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            mainStatsPanel.add(creerSectionStatistiquesLivraisons());
+            mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            mainStatsPanel.add(creerSectionTopPizzas());
+            mainStatsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            mainStatsPanel.add(creerSectionStatistiquesClients());
+            
+            // Réassigner l'action au nouveau bouton
+            newRefreshButton.addActionListener(refreshButton.getActionListeners()[0]);
+            
+            // Rafraîchir l'affichage
+            mainStatsPanel.revalidate();
+            mainStatsPanel.repaint();
+            
+            JOptionPane.showMessageDialog(panel, 
+                "Statistiques actualisées avec succès!", 
+                "Actualisation", 
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        
+        // Ajouter le panneau principal dans un scroll pane
+        JScrollPane scrollPane = new JScrollPane(mainStatsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
+    }
+    
+    /**
+     * Crée la section des statistiques générales
+     */
+    private JPanel creerSectionStatistiquesGenerales() {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.BLUE, 2), 
+            "📈 Statistiques Générales", 
+            0, 0, new Font("Dialog", Font.BOLD, 14), Color.BLUE));
+        
+        JPanel gridPanel = new JPanel(new GridLayout(2, 4, 10, 10));
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        try {
+            // Récupérer les données
+            ClientDAO clientDAO = new ClientDAO();
+            PizzaDAO pizzaDAO = new PizzaDAO();
+            CommandeDAO commandeDAO = new CommandeDAO();
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            
+            List<Client> clients = clientDAO.trouverTous();
+            List<Pizza> pizzas = pizzaDAO.trouverTous();
+            List<Commande> commandes = commandeDAO.trouverTousSansDetails();
+            List<Livraison> livraisons = livraisonDAO.trouverTousSansDetails();
+            
+            // Créer les cartes de statistiques
+            gridPanel.add(creerCarteStatistique("👥 Clients", String.valueOf(clients.size()), Color.CYAN));
+            gridPanel.add(creerCarteStatistique("🍕 Pizzas", String.valueOf(pizzas.size()), Color.ORANGE));
+            gridPanel.add(creerCarteStatistique("📋 Commandes", String.valueOf(commandes.size()), Color.GREEN));
+            gridPanel.add(creerCarteStatistique("🚚 Livraisons", String.valueOf(livraisons.size()), Color.MAGENTA));
+            
+            // Calculer le chiffre d'affaires total
+            double chiffreAffaires = 0.0;
+            for (Commande commande : commandes) {
+                if (!commande.isEstGratuite()) {
+                    chiffreAffaires += commandeDAO.calculerMontantTotal(commande.getIdCommande());
+                }
+            }
+            
+            // Calculer le solde total des clients
+            double soldeTotal = clients.stream().mapToDouble(Client::getSoldeCompte).sum();
+            
+            // Compter les commandes gratuites
+            long commandesGratuites = commandes.stream().filter(Commande::isEstGratuite).count();
+            
+            // Compter les livraisons en retard
+            long livraisonsEnRetard = livraisons.stream().filter(Livraison::isEstEnRetard).count();
+            
+            gridPanel.add(creerCarteStatistique("💰 CA Total", String.format("%.2f€", chiffreAffaires), Color.YELLOW));
+            gridPanel.add(creerCarteStatistique("💳 Solde Clients", String.format("%.2f€", soldeTotal), Color.PINK));
+            gridPanel.add(creerCarteStatistique("🎁 Cmd Gratuites", String.valueOf(commandesGratuites), Color.LIGHT_GRAY));
+            gridPanel.add(creerCarteStatistique("⚠️ Retards", String.valueOf(livraisonsEnRetard), Color.RED));
+            
+        } catch (Exception e) {
+            gridPanel.add(new JLabel("Erreur lors du chargement des statistiques: " + e.getMessage()));
+        }
+        
+        section.add(gridPanel, BorderLayout.CENTER);
+        return section;
+    }
+    
+    /**
+     * Crée la section des statistiques des commandes
+     */
+    private JPanel creerSectionStatistiquesCommandes() {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.GREEN, 2), 
+            "📋 Statistiques des Commandes", 
+            0, 0, new Font("Dialog", Font.BOLD, 14), Color.GREEN));
+        
+        try {
+            CommandeDAO commandeDAO = new CommandeDAO();
+            List<Commande> commandes = commandeDAO.trouverTousSansDetails();
+            
+            // Compter par statut
+            long enPreparation = commandes.stream().filter(c -> c.getStatut() == Commande.Statut.EN_PREPARATION).count();
+            long enLivraison = commandes.stream().filter(c -> c.getStatut() == Commande.Statut.EN_LIVRAISON).count();
+            long livrees = commandes.stream().filter(c -> c.getStatut() == Commande.Statut.LIVREE).count();
+            long annulees = commandes.stream().filter(c -> c.getStatut() == Commande.Statut.ANNULEE).count();
+            
+            JPanel gridPanel = new JPanel(new GridLayout(1, 4, 10, 10));
+            gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            gridPanel.add(creerCarteStatistique("🔄 En préparation", String.valueOf(enPreparation), Color.ORANGE));
+            gridPanel.add(creerCarteStatistique("🚚 En livraison", String.valueOf(enLivraison), Color.BLUE));
+            gridPanel.add(creerCarteStatistique("✅ Livrées", String.valueOf(livrees), Color.GREEN));
+            gridPanel.add(creerCarteStatistique("❌ Annulées", String.valueOf(annulees), Color.RED));
+            
+            section.add(gridPanel, BorderLayout.CENTER);
+            
+        } catch (Exception e) {
+            section.add(new JLabel("Erreur: " + e.getMessage()), BorderLayout.CENTER);
+        }
+        
+        return section;
+    }
+    
+    /**
+     * Crée la section des statistiques des livraisons
+     */
+    private JPanel creerSectionStatistiquesLivraisons() {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.MAGENTA, 2), 
+            "🚚 Statistiques des Livraisons", 
+            0, 0, new Font("Dialog", Font.BOLD, 14), Color.MAGENTA));
+        
+        try {
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            List<Livraison> livraisons = livraisonDAO.trouverTousSansDetails();
+            
+            // Calculer les statistiques
+            long enCours = livraisons.stream().filter(l -> l.getHeureArrivee() == null && !l.isEstEnRetard()).count();
+            long terminees = livraisons.stream().filter(l -> l.getHeureArrivee() != null).count();
+            long enRetard = livraisons.stream().filter(Livraison::isEstEnRetard).count();
+            
+            // Calculer la durée moyenne des livraisons terminées
+            double dureeMoyenne = livraisons.stream()
+                .filter(l -> l.getHeureArrivee() != null)
+                .mapToLong(Livraison::calculerDureeMinutes)
+                .filter(d -> d >= 0)
+                .average()
+                .orElse(0.0);
+            
+            JPanel gridPanel = new JPanel(new GridLayout(1, 4, 10, 10));
+            gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            gridPanel.add(creerCarteStatistique("🔄 En cours", String.valueOf(enCours), Color.BLUE));
+            gridPanel.add(creerCarteStatistique("✅ Terminées", String.valueOf(terminees), Color.GREEN));
+            gridPanel.add(creerCarteStatistique("⚠️ En retard", String.valueOf(enRetard), Color.RED));
+            gridPanel.add(creerCarteStatistique("⏱️ Durée moy.", String.format("%.1f min", dureeMoyenne), Color.CYAN));
+            
+            section.add(gridPanel, BorderLayout.CENTER);
+            
+        } catch (Exception e) {
+            section.add(new JLabel("Erreur: " + e.getMessage()), BorderLayout.CENTER);
+        }
+        
+        return section;
+    }
+    
+    /**
+     * Crée la section du top des pizzas
+     */
+    private JPanel creerSectionTopPizzas() {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.ORANGE, 2), 
+            "🍕 Top 5 des Pizzas les Plus Commandées", 
+            0, 0, new Font("Dialog", Font.BOLD, 14), Color.ORANGE));
+        
+        try {
+            // Créer un tableau pour afficher le top des pizzas
+            String[] columns = {"Rang", "Pizza", "Nombre de commandes", "Chiffre d'affaires"};
+            DefaultTableModel model = new DefaultTableModel(columns, 0);
+            JTable table = new JTable(model);
+            
+            // Calculer les statistiques des pizzas
+            Map<String, Integer> pizzaCommandes = new HashMap<>();
+            Map<String, Double> pizzaCA = new HashMap<>();
+            
+            DetailCommandeDAO detailDAO = new DetailCommandeDAO();
+            CommandeDAO commandeDAO = new CommandeDAO();
+            List<Commande> commandes = commandeDAO.trouverTousSansDetails();
+            
+            for (Commande commande : commandes) {
+                if (!commande.isEstGratuite()) { // Exclure les commandes gratuites du CA
+                    List<DetailCommande> details = detailDAO.trouverParCommande(commande.getIdCommande());
+                    for (DetailCommande detail : details) {
+                        String nomPizza = detail.getPizza().getNom();
+                        int quantite = detail.getQuantite();
+                        double sousTotal = detail.calculerSousTotal();
+                        
+                        pizzaCommandes.put(nomPizza, pizzaCommandes.getOrDefault(nomPizza, 0) + quantite);
+                        pizzaCA.put(nomPizza, pizzaCA.getOrDefault(nomPizza, 0.0) + sousTotal);
+                    }
+                }
+            }
+            
+            // Trier par nombre de commandes et prendre le top 5
+            pizzaCommandes.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(5)
+                .forEach(entry -> {
+                    String nomPizza = entry.getKey();
+                    int nbCommandes = entry.getValue();
+                    double ca = pizzaCA.getOrDefault(nomPizza, 0.0);
+                    
+                    model.addRow(new Object[]{
+                        model.getRowCount() + 1,
+                        nomPizza,
+                        nbCommandes,
+                        String.format("%.2f€", ca)
+                    });
+                });
+            
+            // Styliser le tableau
+            table.setRowHeight(25);
+            table.getColumnModel().getColumn(0).setPreferredWidth(50);
+            table.getColumnModel().getColumn(1).setPreferredWidth(200);
+            table.getColumnModel().getColumn(2).setPreferredWidth(150);
+            table.getColumnModel().getColumn(3).setPreferredWidth(150);
+            
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setPreferredSize(new Dimension(550, 150));
+            section.add(scrollPane, BorderLayout.CENTER);
+            
+        } catch (Exception e) {
+            section.add(new JLabel("Erreur: " + e.getMessage()), BorderLayout.CENTER);
+        }
+        
+        return section;
+    }
+    
+    /**
+     * Crée la section des statistiques des clients
+     */
+    private JPanel creerSectionStatistiquesClients() {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.CYAN, 2), 
+            "👥 Statistiques des Clients", 
+            0, 0, new Font("Dialog", Font.BOLD, 14), Color.CYAN));
+        
+        try {
+            ClientDAO clientDAO = new ClientDAO();
+            List<Client> clients = clientDAO.trouverTous();
+            
+            // Calculer les statistiques
+            double soldeMoyen = clients.stream().mapToDouble(Client::getSoldeCompte).average().orElse(0.0);
+            double pizzasMoyennes = clients.stream().mapToDouble(Client::getNbPizzasAchetees).average().orElse(0.0);
+            
+            Client clientPlusRiche = clients.stream()
+                .max((c1, c2) -> Double.compare(c1.getSoldeCompte(), c2.getSoldeCompte()))
+                .orElse(null);
+            
+            Client clientPlusActif = clients.stream()
+                .max((c1, c2) -> Integer.compare(c1.getNbPizzasAchetees(), c2.getNbPizzasAchetees()))
+                .orElse(null);
+            
+            JPanel gridPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+            gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            gridPanel.add(creerCarteStatistique("💰 Solde moyen", String.format("%.2f€", soldeMoyen), Color.YELLOW));
+            gridPanel.add(creerCarteStatistique("🍕 Pizzas moy.", String.format("%.1f", pizzasMoyennes), Color.ORANGE));
+            
+            if (clientPlusRiche != null) {
+                gridPanel.add(creerCarteStatistique("🏆 Client le + riche", 
+                    clientPlusRiche.getNom() + " " + clientPlusRiche.getPrenom() + 
+                    " (" + String.format("%.2f€", clientPlusRiche.getSoldeCompte()) + ")", new Color(255, 215, 0))); // Couleur dorée
+            } else {
+                gridPanel.add(creerCarteStatistique("🏆 Client le + riche", "Aucun", Color.LIGHT_GRAY));
+            }
+            
+            if (clientPlusActif != null) {
+                gridPanel.add(creerCarteStatistique("🥇 Client le + actif", 
+                    clientPlusActif.getNom() + " " + clientPlusActif.getPrenom() + 
+                    " (" + clientPlusActif.getNbPizzasAchetees() + " pizzas)", Color.PINK));
+            } else {
+                gridPanel.add(creerCarteStatistique("🥇 Client le + actif", "Aucun", Color.LIGHT_GRAY));
+            }
+            
+            section.add(gridPanel, BorderLayout.CENTER);
+            
+        } catch (Exception e) {
+            section.add(new JLabel("Erreur: " + e.getMessage()), BorderLayout.CENTER);
+        }
+        
+        return section;
+    }
+    
+    /**
+     * Crée une carte de statistique avec un titre, une valeur et une couleur
+     */
+    private JPanel creerCarteStatistique(String titre, String valeur, Color couleur) {
+        JPanel carte = new JPanel(new BorderLayout());
+        carte.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(couleur, 2),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        carte.setBackground(couleur.brighter().brighter());
+        
+        JLabel titreLabel = new JLabel(titre);
+        titreLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+        titreLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        JLabel valeurLabel = new JLabel(valeur);
+        valeurLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+        valeurLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        carte.add(titreLabel, BorderLayout.NORTH);
+        carte.add(valeurLabel, BorderLayout.CENTER);
+        
+        return carte;
     }
     
     /**

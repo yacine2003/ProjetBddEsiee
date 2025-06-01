@@ -1550,7 +1550,7 @@ public class MainFrame extends JFrame {
         };
         
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
-                    @Override
+            @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 7; // Seule la colonne Actions est éditable
             }
@@ -2000,7 +2000,7 @@ public class MainFrame extends JFrame {
             // Tableau des pizzas actuelles
             String[] pizzaColumns = {"Pizza", "Taille", "Quantité", "Prix unitaire", "Sous-total", "Actions"};
             DefaultTableModel pizzaModel = new DefaultTableModel(pizzaColumns, 0) {
-                @Override
+                    @Override
                 public boolean isCellEditable(int row, int column) {
                     return peutModifierContenu && (column == 2 || column == 5); // Quantité et Actions
                 }
@@ -2024,7 +2024,7 @@ public class MainFrame extends JFrame {
             
             // Renderer pour la colonne Actions
             pizzaTable.getColumnModel().getColumn(5).setCellRenderer(new javax.swing.table.TableCellRenderer() {
-                @Override
+                    @Override
                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
                         boolean hasFocus, int row, int column) {
                     JButton button = new JButton(value.toString());
@@ -2416,19 +2416,19 @@ public class MainFrame extends JFrame {
                     // Rafraîchir le tableau
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
                     chargerCommandes(model, null, "Tous les statuts");
-                    } else {
+                        } else {
                     JOptionPane.showMessageDialog(this, 
                         "Erreur lors de la suppression de la commande", 
-                            "Erreur", 
-                            JOptionPane.ERROR_MESSAGE);
-                    }
+                                "Erreur", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
             }
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
                 "Erreur lors de la suppression : " + e.getMessage(), 
                 "Erreur", 
-                        JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -2580,19 +2580,19 @@ public class MainFrame extends JFrame {
                 if (selectedClient == null) {
                     JOptionPane.showMessageDialog(createDialog, 
                         "Veuillez sélectionner un client", 
-                        "Champ requis", 
-                        JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                
+                            "Champ requis", 
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    
                 if (pizzaModel.getRowCount() == 0) {
                     JOptionPane.showMessageDialog(createDialog, 
                         "Veuillez ajouter au moins une pizza", 
                         "Commande vide", 
-                        JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    
                 // Créer la commande
                 Commande nouvelleCommande = new Commande(selectedClient);
                 nouvelleCommande.setEstGratuite(estGratuite);

@@ -1,7 +1,7 @@
 package fr.esiee.rapizz;
 
 import fr.esiee.rapizz.util.DatabaseConfig;
-import fr.esiee.rapizz.view.MainFrame;
+import fr.esiee.rapizz.view.WelcomeFrame;
 
 import javax.swing.*;
 
@@ -34,10 +34,10 @@ public class RapizzApplication {
             System.exit(1);
         }
         
-        // Lancement de l'interface graphique dans l'EDT (Event Dispatch Thread)
+        // Lancement de la page d'accueil dans l'EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
+            WelcomeFrame welcomeFrame = new WelcomeFrame();
+            welcomeFrame.setVisible(true);
         });
     }
 } 

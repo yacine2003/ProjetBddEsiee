@@ -4,6 +4,7 @@ import fr.esiee.rapizz.model.Livraison;
 import fr.esiee.rapizz.model.Livreur;
 import fr.esiee.rapizz.model.Vehicule;
 import fr.esiee.rapizz.model.Commande;
+import fr.esiee.rapizz.model.Client;
 import fr.esiee.rapizz.util.DatabaseConfig;
 
 import java.sql.*;
@@ -189,6 +190,42 @@ public class LivraisonDAO {
     }
     
     /**
+     * Récupère toutes les livraisons avec leurs détails en utilisant des jointures SQL
+     * pour éviter les problèmes de ResultSet fermé
+     * @return Liste des livraisons avec détails
+     */
+    public List<Livraison> trouverTousSansDetails() {
+        List<Livraison> livraisons = new ArrayList<>();
+        String sql = "SELECT " +
+            "l.id_livraison, l.heure_depart, l.heure_arrivee, l.est_en_retard, " +
+            "liv.id_livreur, liv.nom as livreur_nom, liv.prenom as livreur_prenom, " +
+            "liv.telephone as livreur_telephone, liv.nb_retards, " +
+            "v.id_vehicule, v.type as vehicule_type, v.immatriculation, v.statut as vehicule_statut, " +
+            "c.id_commande, c.date_commande, c.heure_commande, c.statut as commande_statut, c.est_gratuite, " +
+            "cl.id_client, cl.nom as client_nom, cl.prenom as client_prenom, " +
+            "cl.adresse, cl.telephone as client_telephone, cl.solde_compte, cl.nb_pizzas_achetees " +
+            "FROM Livraison l " +
+            "JOIN Livreur liv ON l.id_livreur = liv.id_livreur " +
+            "JOIN Vehicule v ON l.id_vehicule = v.id_vehicule " +
+            "JOIN Commande c ON l.id_commande = c.id_commande " +
+            "JOIN Client cl ON c.id_client = cl.id_client " +
+            "ORDER BY l.heure_depart DESC";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                livraisons.add(extraireLivraisonAvecJointures(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des livraisons : " + e.getMessage());
+        }
+        
+        return livraisons;
+    }
+    
+    /**
      * Trouve les livraisons d'un livreur spécifique
      * @param idLivreur Identifiant du livreur
      * @return Liste des livraisons effectuées par ce livreur
@@ -356,6 +393,70 @@ public class LivraisonDAO {
         // Récupérer la commande associée à la livraison
         int idCommande = rs.getInt("id_commande");
         Commande commande = commandeDAO.trouverParId(idCommande);
+        livraison.setCommande(commande);
+        
+        return livraison;
+    }
+    
+    /**
+     * Extrait une livraison d'un ResultSet avec jointures (sans appels DAO imbriqués)
+     * @param rs ResultSet contenant les données de la livraison avec jointures
+     * @return Livraison extraite
+     * @throws SQLException En cas d'erreur SQL
+     */
+    private Livraison extraireLivraisonAvecJointures(ResultSet rs) throws SQLException {
+        // Créer la livraison
+        Livraison livraison = new Livraison();
+        livraison.setIdLivraison(rs.getInt("id_livraison"));
+        
+        // Conversion des heures
+        Time heureDepart = rs.getTime("heure_depart");
+        if (heureDepart != null) {
+            livraison.setHeureDepart(heureDepart.toLocalTime());
+        }
+        
+        Time heureArrivee = rs.getTime("heure_arrivee");
+        if (heureArrivee != null) {
+            livraison.setHeureArrivee(heureArrivee.toLocalTime());
+        }
+        
+        livraison.setEstEnRetard(rs.getBoolean("est_en_retard"));
+        
+        // Créer le livreur directement depuis le ResultSet
+        Livreur livreur = new Livreur();
+        livreur.setIdLivreur(rs.getInt("id_livreur"));
+        livreur.setNom(rs.getString("livreur_nom"));
+        livreur.setPrenom(rs.getString("livreur_prenom"));
+        livreur.setTelephone(rs.getString("livreur_telephone"));
+        livreur.setNbRetards(rs.getInt("nb_retards"));
+        livraison.setLivreur(livreur);
+        
+        // Créer le véhicule directement depuis le ResultSet
+        Vehicule vehicule = new Vehicule();
+        vehicule.setIdVehicule(rs.getInt("id_vehicule"));
+        vehicule.setType(Vehicule.Type.valueOf(rs.getString("vehicule_type").toUpperCase()));
+        vehicule.setImmatriculation(rs.getString("immatriculation"));
+        vehicule.setStatut(Vehicule.Statut.valueOf(rs.getString("vehicule_statut").toUpperCase()));
+        livraison.setVehicule(vehicule);
+        
+        // Créer le client directement depuis le ResultSet
+        Client client = new Client();
+        client.setIdClient(rs.getInt("id_client"));
+        client.setNom(rs.getString("client_nom"));
+        client.setPrenom(rs.getString("client_prenom"));
+        client.setAdresse(rs.getString("adresse"));
+        client.setTelephone(rs.getString("client_telephone"));
+        client.setSoldeCompte(rs.getDouble("solde_compte"));
+        client.setNbPizzasAchetees(rs.getInt("nb_pizzas_achetees"));
+        
+        // Créer la commande directement depuis le ResultSet
+        Commande commande = new Commande();
+        commande.setIdCommande(rs.getInt("id_commande"));
+        commande.setDateCommande(rs.getDate("date_commande").toLocalDate());
+        commande.setHeureCommande(rs.getTime("heure_commande").toLocalTime());
+        commande.setStatut(Commande.Statut.valueOf(rs.getString("commande_statut").toUpperCase()));
+        commande.setEstGratuite(rs.getBoolean("est_gratuite"));
+        commande.setClient(client);
         livraison.setCommande(commande);
         
         return livraison;

@@ -2744,14 +2744,14 @@ public class MainFrame extends JFrame {
         livraisonsTable.getColumnModel().getColumn(5).setPreferredWidth(100); // Heure arrivée
         livraisonsTable.getColumnModel().getColumn(6).setPreferredWidth(80);  // Durée
         livraisonsTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Statut
-        livraisonsTable.getColumnModel().getColumn(8).setPreferredWidth(250); // Actions
+        livraisonsTable.getColumnModel().getColumn(8).setPreferredWidth(320); // Actions - largeur augmentée
         
         // Renderer personnalisé pour la colonne Actions
         livraisonsTable.getColumnModel().getColumn(8).setCellRenderer(new javax.swing.table.TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
                     boolean hasFocus, int row, int column) {
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2)); // Espacement réduit
                 
                 // Vérifier si la livraison est terminée
                 String heureArrivee = (String) table.getValueAt(row, 5);
@@ -2762,14 +2762,14 @@ public class MainFrame extends JFrame {
                 JButton finishButton = new JButton("Terminer");
                 JButton deleteButton = new JButton("Supprimer");
                 
-                // Taille des boutons
-                detailsButton.setPreferredSize(new Dimension(70, 30));
-                editButton.setPreferredSize(new Dimension(70, 30));
-                finishButton.setPreferredSize(new Dimension(70, 30));
-                deleteButton.setPreferredSize(new Dimension(80, 30));
+                // Taille des boutons réduite
+                detailsButton.setPreferredSize(new Dimension(65, 28));
+                editButton.setPreferredSize(new Dimension(65, 28));
+                finishButton.setPreferredSize(new Dimension(65, 28));
+                deleteButton.setPreferredSize(new Dimension(75, 28));
                 
                 // Police
-                Font buttonFont = new Font("Dialog", Font.BOLD, 10);
+                Font buttonFont = new Font("Dialog", Font.BOLD, 9); // Police légèrement plus petite
                 detailsButton.setFont(buttonFont);
                 editButton.setFont(buttonFont);
                 finishButton.setFont(buttonFont);
@@ -2812,7 +2812,7 @@ public class MainFrame extends JFrame {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
                 currentRow = row;
-                buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+                buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
                 
                 // Vérifier si la livraison est terminée
                 String heureArrivee = (String) table.getValueAt(row, 5);
@@ -2823,14 +2823,14 @@ public class MainFrame extends JFrame {
                 JButton finishButton = new JButton("Terminer");
                 JButton deleteButton = new JButton("Supprimer");
                 
-                // Taille des boutons
-                detailsButton.setPreferredSize(new Dimension(70, 30));
-                editButton.setPreferredSize(new Dimension(70, 30));
-                finishButton.setPreferredSize(new Dimension(70, 30));
-                deleteButton.setPreferredSize(new Dimension(80, 30));
+                // Taille des boutons réduite
+                detailsButton.setPreferredSize(new Dimension(65, 28));
+                editButton.setPreferredSize(new Dimension(65, 28));
+                finishButton.setPreferredSize(new Dimension(65, 28));
+                deleteButton.setPreferredSize(new Dimension(75, 28));
                 
                 // Police
-                Font buttonFont = new Font("Dialog", Font.BOLD, 10);
+                Font buttonFont = new Font("Dialog", Font.BOLD, 9); // Police légèrement plus petite
                 detailsButton.setFont(buttonFont);
                 editButton.setFont(buttonFont);
                 finishButton.setFont(buttonFont);
@@ -2930,7 +2930,7 @@ public class MainFrame extends JFrame {
             tableModel.setRowCount(0); // Vider le tableau
             
             LivraisonDAO livraisonDAO = new LivraisonDAO();
-            List<Livraison> livraisons = livraisonDAO.trouverTous();
+            List<Livraison> livraisons = livraisonDAO.trouverTousSansDetails();
             
             for (Livraison livraison : livraisons) {
                 // Filtrer par terme de recherche (nom du livreur)
@@ -3392,17 +3392,47 @@ public class MainFrame extends JFrame {
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
         
         CommandeDAO commandeDAO = new CommandeDAO();
-        List<Commande> toutesCommandes = commandeDAO.trouverTous();
+        List<Commande> toutesCommandes = commandeDAO.trouverTousSansDetails(); // Utiliser la méthode sans détails
         List<Commande> commandesEnLivraison = new ArrayList<>();
         for (Commande commande : toutesCommandes) {
             if (commande.getStatut() == Commande.Statut.EN_LIVRAISON) {
                 commandesEnLivraison.add(commande);
             }
         }
+        
+        // Vérifier s'il y a des commandes en livraison
+        if (commandesEnLivraison.isEmpty()) {
+            JOptionPane.showMessageDialog(createDialog, 
+                "Aucune commande avec le statut 'En livraison' n'est disponible.\n" +
+                "Veuillez d'abord créer une commande et la mettre en statut 'En livraison'.", 
+                "Aucune commande disponible", 
+                JOptionPane.INFORMATION_MESSAGE);
+            createDialog.dispose();
+            return;
+        }
+        
         JComboBox<Commande> commandeCombo = new JComboBox<>();
         for (Commande commande : commandesEnLivraison) {
             commandeCombo.addItem(commande);
         }
+        // Renderer pour afficher les informations de la commande
+        commandeCombo.setRenderer(new javax.swing.ListCellRenderer<Commande>() {
+            @Override
+            public Component getListCellRendererComponent(JList<? extends Commande> list, Commande value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = new JLabel();
+                if (value != null) {
+                    label.setText("Commande #" + value.getIdCommande() + " - " + 
+                                value.getClient().getNom() + " " + value.getClient().getPrenom());
+                }
+                if (isSelected) {
+                    label.setBackground(list.getSelectionBackground());
+                    label.setForeground(list.getSelectionForeground());
+                    label.setOpaque(true);
+                }
+                return label;
+            }
+        });
         formPanel.add(commandeCombo, gbc);
         
         // Sélection du livreur

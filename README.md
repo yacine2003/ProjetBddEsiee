@@ -1,119 +1,86 @@
-# 🍕 Projet BDD ESIEE - Gestion d'une entreprise de pizzas à domicile
+# 🍕 RaPizz - Application de Gestion de Pizzeria
 
-## Description du projet
+**Projet de Base de Données - ESIEE Paris**
 
-Ce projet vise à modéliser la gestion d'une entreprise de fabrication et de livraison de pizzas à domicile nommée RaPizz. Il s'agit d'une société en franchise qui utilise des formats et des compositions de pizzas normalisées à partir d'un ensemble d'ingrédients déterminés.
+Application Java complète de gestion de pizzeria utilisant Maven, MySQL et Swing.
 
-## Fonctionnalités principales
+## 🚀 Démarrage Rapide (5 minutes)
 
-- Gestion des clients et de leurs comptes prépayés
-- Gestion du catalogue de pizzas et de leurs ingrédients
-- Suivi des commandes et des livraisons
-- Gestion des livreurs et de leurs véhicules
-- Système de bonification (fidélité et retard)
-- Statistiques diverses sur l'activité
+### 1. Prérequis
+- **Java 11+** : `java -version`
+- **Maven 3.6+** : `mvn -version`
+- **MySQL Server** démarré
 
-## Structure du projet
+### 2. Configuration Base de Données
+```bash
+# Se connecter à MySQL
+mysql -u root -p
 
-```
-ProjetBddEsiee/
-├── conception/        # Modèles entité-association et relationnel
-├── sql/               # Scripts SQL
-│   ├── creation_tables.sql    # Création des tables
-│   ├── insertion_donnees.sql  # Insertion des données de test
-│   └── requetes.sql           # Requêtes demandées
-├── src/               # Code source de l'application Java
-│   └── main/
-│       └── java/
-│           └── fr/
-│               └── esiee/
-│                   └── rapizz/
-│                       ├── dao/        # Classes d'accès aux données
-│                       ├── model/      # Classes modèles
-│                       ├── view/       # Interface utilisateur (SWING)
-│                       ├── controller/ # Contrôleurs
-│                       └── util/       # Classes utilitaires
-└── docs/              # Documentation
+# Exécuter les scripts
+source sql/creation_tables.sql
+source sql/insertion_donnees.sql
+exit
 ```
 
-## Modèle de données
+### 3. Lancement
+```bash
+# Script automatique (Recommandé)
+./start.sh          # Linux/macOS
+start.bat           # Windows
 
-Le système gère les entités suivantes :
-- Clients
-- Pizzas
-- Ingrédients
-- Commandes
-- Livraisons
-- Livreurs
-- Véhicules
+# Ou manuellement
+mvn clean compile
+mvn exec:java -Dexec.mainClass="fr.esiee.rapizz.RapizzApplication"
+```
 
-## Spécificités du système
+## ✨ Fonctionnalités
 
-- Pizzas disponibles en trois tailles : naine (-1/3 du prix), humaine (prix de base), ogresse (+1/3 du prix)
-- Système prépayé : les clients doivent s'abonner et approvisionner leur compte
-- Deux systèmes de bonification :
-  - Pizza gratuite au bout de 10 pizzas achetées
-  - Pizza gratuite si livrée en plus de 30 minutes
+L'application comprend 5 modules :
 
-## Technologies utilisées
+- **👥 Clients** - Gestion CRUD, soldes, historique
+- **🍕 Pizzas** - Catalogue avec ingrédients et tailles
+- **📋 Commandes** - Création, modification, suivi des statuts
+- **🚚 Livraisons** - Attribution livreur/véhicule, gestion retards
+- **📊 Statistiques** - Tableau de bord temps réel
 
-- Base de données relationnelle (MySQL/MariaDB)
-- Java pour l'application
-- JDBC pour la connexion à la base de données
-- Swing pour l'interface graphique
-- Pattern DAO pour l'accès aux données
+## 🔧 Configuration
 
-## Installation et démarrage
+Si nécessaire, modifier `src/main/java/fr/esiee/rapizz/util/DatabaseConfig.java` :
+```java
+private static final String DB_URL = "jdbc:mysql://localhost:3306/rapizz";
+private static final String DB_USER = "root";
+private static final String DB_PASSWORD = "VotreMotDePasse";
+```
 
-### Méthode automatisée (recommandée)
-1. Rendre le script d'installation exécutable (si ce n'est pas déjà fait) :
-   ```bash
-   chmod +x setup_database.sh
-   ```
-2. Exécuter le script d'installation :
-   ```bash
-   ./setup_database.sh
-   ```
-   - Le script vous demandera le mot de passe root MySQL
-   - Il exécutera automatiquement les scripts de création et d'insertion
+## 🐛 Dépannage
 
-### Méthode manuelle
-1. Créer une base de données MySQL/MariaDB
-   - Cette étape est optionnelle car le script `creation_tables.sql` crée automatiquement la base de données nommée `rapizz`
-   - Si vous souhaitez utiliser un autre nom, modifiez les scripts SQL en conséquence
-2. Exécuter les scripts SQL dans l'ordre suivant :
-   ```bash
-   sudo /usr/local/mysql/bin/mysql -p < sql/creation_tables.sql
-   sudo /usr/local/mysql/bin/mysql -p rapizz < sql/insertion_donnees.sql
-   ```
-3. Pour exécuter les requêtes :
-   ```bash
-   sudo /usr/local/mysql/bin/mysql -p rapizz < sql/requetes.sql
-   ```
+**Erreur de connexion MySQL :**
+- Vérifier que MySQL est démarré
+- Vérifier les paramètres dans `DatabaseConfig.java`
 
-### Configuration et démarrage de l'application
-1. Configurer les paramètres de connexion dans l'application Java
-2. Compiler et exécuter l'application
+**Erreur "Class not found" :**
+```bash
+mvn clean compile
+```
 
-## Requêtes SQL implémentées
+**Base de données manquante :**
+```bash
+mysql -u root -p
+source sql/creation_tables.sql
+source sql/insertion_donnees.sql
+```
 
-1. Extraction des données pour le menu (carte des pizzas)
-2. Génération de fiches de livraison
-3. Statistiques diverses :
-   - Véhicules jamais utilisés
-   - Nombre de commandes par client
-   - Moyenne des commandes
-   - Clients ayant commandé plus que la moyenne
-   - Identification du meilleur client
-   - Identification du plus mauvais livreur
-   - Identification des pizzas les plus/moins demandées
-   - Identification de l'ingrédient favori
+## 📁 Structure du Projet
 
-## Contributeurs
-
-- [Votre nom]
-- [Nom des autres membres de l'équipe]
+```
+src/main/java/fr/esiee/rapizz/
+├── RapizzApplication.java          # Point d'entrée
+├── model/                          # Modèles (Client, Pizza, etc.)
+├── dao/                           # Accès données
+├── view/                          # Interface Swing
+└── util/                          # Configuration DB
+```
 
 ---
 
-Projet réalisé dans le cadre du cours de Base de Données à l'ESIEE Paris.
+**Développé dans le cadre du projet de Base de Données - ESIEE Paris**

@@ -317,4 +317,107 @@ public class CommandeDAO {
         
         return commande;
     }
+    
+    /**
+     * Récupère toutes les commandes de la base de données sans charger les détails
+     * @return Liste des commandes
+     */
+    public List<Commande> trouverTousSansDetails() {
+        List<Commande> commandes = new ArrayList<>();
+        String sql = "SELECT c.*, cl.nom, cl.prenom, cl.solde_compte " +
+                    "FROM Commande c " +
+                    "JOIN Client cl ON c.id_client = cl.id_client " +
+                    "ORDER BY c.date_commande DESC, c.heure_commande DESC";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                Commande commande = new Commande();
+                commande.setIdCommande(rs.getInt("id_commande"));
+                
+                // Conversion des dates et heures
+                commande.setDateCommande(rs.getDate("date_commande").toLocalDate());
+                commande.setHeureCommande(rs.getTime("heure_commande").toLocalTime());
+                
+                // Conversion du statut (String vers enum)
+                String statutStr = rs.getString("statut");
+                for (Commande.Statut statut : Commande.Statut.values()) {
+                    if (statut.getLibelle().equals(statutStr)) {
+                        commande.setStatut(statut);
+                        break;
+                    }
+                }
+                
+                // Créer le client directement depuis le ResultSet
+                Client client = new Client();
+                client.setIdClient(rs.getInt("id_client"));
+                client.setNom(rs.getString("nom"));
+                client.setPrenom(rs.getString("prenom"));
+                client.setSoldeCompte(rs.getDouble("solde_compte"));
+                commande.setClient(client);
+                
+                commandes.add(commande);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des commandes : " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return commandes;
+    }
+    
+    /**
+     * Récupère une commande par son identifiant sans charger les détails
+     * @param idCommande Identifiant de la commande
+     * @return La commande ou null si non trouvée
+     */
+    public Commande trouverParIdSansDetails(int idCommande) {
+        String sql = "SELECT c.*, cl.nom, cl.prenom, cl.solde_compte " +
+                    "FROM Commande c " +
+                    "JOIN Client cl ON c.id_client = cl.id_client " +
+                    "WHERE c.id_commande = ?";
+        
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, idCommande);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Commande commande = new Commande();
+                    commande.setIdCommande(rs.getInt("id_commande"));
+                    
+                    // Conversion des dates et heures
+                    commande.setDateCommande(rs.getDate("date_commande").toLocalDate());
+                    commande.setHeureCommande(rs.getTime("heure_commande").toLocalTime());
+                    
+                    // Conversion du statut (String vers enum)
+                    String statutStr = rs.getString("statut");
+                    for (Commande.Statut statut : Commande.Statut.values()) {
+                        if (statut.getLibelle().equals(statutStr)) {
+                            commande.setStatut(statut);
+                            break;
+                        }
+                    }
+                    
+                    // Créer le client directement depuis le ResultSet
+                    Client client = new Client();
+                    client.setIdClient(rs.getInt("id_client"));
+                    client.setNom(rs.getString("nom"));
+                    client.setPrenom(rs.getString("prenom"));
+                    client.setSoldeCompte(rs.getDouble("solde_compte"));
+                    commande.setClient(client);
+                    
+                    return commande;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche de la commande : " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
 } 

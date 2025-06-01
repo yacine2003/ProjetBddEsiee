@@ -145,13 +145,17 @@ public class DetailCommandeDAO {
     }
     
     /**
-     * Récupère tous les détails d'une commande
+     * Récupère tous les détails d'une commande avec jointures pour éviter les problèmes de ResultSet
      * @param idCommande Identifiant de la commande
      * @return Liste des détails de la commande
      */
     public List<DetailCommande> trouverParCommande(int idCommande) {
         List<DetailCommande> details = new ArrayList<>();
-        String sql = "SELECT * FROM DetailCommande WHERE id_commande = ?";
+        String sql = "SELECT dc.*, p.nom as pizza_nom, p.prix_base, t.libelle as taille_libelle, t.coefficient_prix " +
+                    "FROM DetailCommande dc " +
+                    "JOIN Pizza p ON dc.id_pizza = p.id_pizza " +
+                    "JOIN Taille t ON dc.id_taille = t.id_taille " +
+                    "WHERE dc.id_commande = ?";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -160,7 +164,31 @@ public class DetailCommandeDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    details.add(extraireDetailCommandeDuResultSet(rs));
+                    DetailCommande detail = new DetailCommande();
+                    
+                    // Créer une commande simple avec juste l'ID
+                    Commande commande = new Commande();
+                    commande.setIdCommande(rs.getInt("id_commande"));
+                    detail.setCommande(commande);
+                    
+                    // Créer la pizza directement depuis le ResultSet
+                    Pizza pizza = new Pizza();
+                    pizza.setIdPizza(rs.getInt("id_pizza"));
+                    pizza.setNom(rs.getString("pizza_nom"));
+                    pizza.setPrixBase(rs.getDouble("prix_base"));
+                    detail.setPizza(pizza);
+                    
+                    // Créer la taille directement depuis le ResultSet
+                    Taille taille = new Taille();
+                    taille.setIdTaille(rs.getInt("id_taille"));
+                    taille.setLibelle(rs.getString("taille_libelle"));
+                    taille.setCoefficientPrix(rs.getDouble("coefficient_prix"));
+                    detail.setTaille(taille);
+                    
+                    detail.setQuantite(rs.getInt("quantite"));
+                    detail.setPrixUnitaire(rs.getDouble("prix_unitaire"));
+                    
+                    details.add(detail);
                 }
             }
         } catch (SQLException e) {
@@ -253,10 +281,10 @@ public class DetailCommandeDAO {
     private DetailCommande extraireDetailCommandeDuResultSet(ResultSet rs) throws SQLException {
         DetailCommande detail = new DetailCommande();
         
-        // Récupérer la commande associée au détail
+        // Créer une commande simple avec juste l'ID pour éviter la récursion
         int idCommande = rs.getInt("id_commande");
-        CommandeDAO commandeDAO = new CommandeDAO();
-        Commande commande = commandeDAO.trouverParId(idCommande);
+        Commande commande = new Commande();
+        commande.setIdCommande(idCommande);
         detail.setCommande(commande);
         
         // Récupérer la pizza associée au détail

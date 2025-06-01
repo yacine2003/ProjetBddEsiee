@@ -855,7 +855,7 @@ public class MainFrame extends JFrame {
             
             addPizzaDialog.setVisible(true);
         });
-
+        
         return panel;
     }
     
@@ -885,14 +885,14 @@ public class MainFrame extends JFrame {
             noResultLabel.setFont(new Font("Dialog", Font.ITALIC, 14));
             pizzasPanel.add(noResultLabel);
         } else {
-            // Création d'un panneau pour chaque pizza
-            for (Pizza pizza : pizzas) {
+        // Création d'un panneau pour chaque pizza
+        for (Pizza pizza : pizzas) {
                 // Panneau principal pour une pizza avec une hauteur fixe
                 JPanel singlePizzaPanel = new JPanel(new BorderLayout());
                 singlePizzaPanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(10, 10, 10, 10),
-                    BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true)
-                ));
+                BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true)
+            ));
                 singlePizzaPanel.setPreferredSize(new Dimension(800, 200));
                 singlePizzaPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
                 
@@ -902,51 +902,51 @@ public class MainFrame extends JFrame {
                 imagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 15));
                 
                 // Trouver et charger l'image
-                String imageName = trouverNomImagePizza(pizza.getNom());
-                ImageIcon imageIcon = chargerImagePizza(imageName);
-                
-                JLabel imageLabel = new JLabel();
-                if (imageIcon != null) {
-                    imageLabel.setIcon(imageIcon);
-                } else {
+            String imageName = trouverNomImagePizza(pizza.getNom());
+            ImageIcon imageIcon = chargerImagePizza(imageName);
+            
+            JLabel imageLabel = new JLabel();
+            if (imageIcon != null) {
+                imageLabel.setIcon(imageIcon);
+            } else {
                     // Image par défaut si pas d'image trouvée
                     imageLabel.setText("<html><center>🍕<br/>Image<br/>non disponible</center></html>");
-                    imageLabel.setHorizontalAlignment(JLabel.CENTER);
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
                     imageLabel.setVerticalAlignment(JLabel.CENTER);
                     imageLabel.setOpaque(true);
                     imageLabel.setBackground(Color.LIGHT_GRAY);
                 }
                 imageLabel.setPreferredSize(new Dimension(160, 140));
-                imagePanel.add(imageLabel, BorderLayout.CENTER);
-                
+            imagePanel.add(imageLabel, BorderLayout.CENTER);
+            
                 // Panneau d'informations à droite
-                JPanel infoPanel = new JPanel();
-                infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+            JPanel infoPanel = new JPanel();
+            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
                 infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 
                 // Titre de la pizza
                 JLabel titleLabel = new JLabel(pizza.getNom());
                 titleLabel.setFont(new Font("Dialog", Font.BOLD, 18));
                 titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                
-                // Ingrédients
-                List<Ingredient> ingredients = pizza.getIngredients();
+            
+            // Ingrédients
+            List<Ingredient> ingredients = pizza.getIngredients();
                 StringBuilder ingredientsStr = new StringBuilder("<html><b>Ingrédients :</b> ");
                 
-                if (ingredients != null && !ingredients.isEmpty()) {
-                    for (int i = 0; i < ingredients.size(); i++) {
+            if (ingredients != null && !ingredients.isEmpty()) {
+                for (int i = 0; i < ingredients.size(); i++) {
                         ingredientsStr.append(ingredients.get(i).getNom());
-                        if (i < ingredients.size() - 1) {
+                    if (i < ingredients.size() - 1) {
                             ingredientsStr.append(", ");
-                        }
                     }
-                } else {
-                    ingredientsStr.append("Aucun ingrédient renseigné");
                 }
+            } else {
+                    ingredientsStr.append("Aucun ingrédient renseigné");
+            }
                 ingredientsStr.append("</html>");
-                
+            
                 JLabel ingredientsLabel = new JLabel(ingredientsStr.toString());
-                ingredientsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            ingredientsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
                 ingredientsLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
                 
                 // Prix de base
@@ -960,10 +960,10 @@ public class MainFrame extends JFrame {
                 // Boutons d'action dans un panneau séparé
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
                 buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                
-                JButton editButton = new JButton("Modifier");
-                JButton deleteButton = new JButton("Supprimer");
-                
+            
+            JButton editButton = new JButton("Modifier");
+            JButton deleteButton = new JButton("Supprimer");
+            
                 // Styliser les boutons
                 editButton.setPreferredSize(new Dimension(80, 30));
                 deleteButton.setPreferredSize(new Dimension(90, 30));
@@ -975,7 +975,7 @@ public class MainFrame extends JFrame {
                 // Ajouter tous les composants au panneau d'info dans l'ordre
                 infoPanel.add(titleLabel);
                 infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-                infoPanel.add(ingredientsLabel);
+            infoPanel.add(ingredientsLabel);
                 infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
                 infoPanel.add(prixLabel);
                 infoPanel.add(verticalGlue); // Pousse les boutons vers le bas
@@ -987,21 +987,21 @@ public class MainFrame extends JFrame {
                 
                 // Ajouter le panneau de la pizza au panneau général
                 pizzasPanel.add(singlePizzaPanel);
-                pizzasPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                
+            pizzasPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            
                 // Gérer les événements des boutons
-                final Pizza currentPizza = pizza;
-                
+            final Pizza currentPizza = pizza;
+            
                 // Action du bouton Modifier
-                editButton.addActionListener(e -> {
-                    // Création d'une fenêtre de modification de pizza
+            editButton.addActionListener(e -> {
+                // Création d'une fenêtre de modification de pizza
                     JDialog editPizzaDialog = new JDialog(this, "Modifier la pizza : " + currentPizza.getNom(), true);
                     editPizzaDialog.setSize(600, 500);
-                    editPizzaDialog.setLocationRelativeTo(this);
-                    editPizzaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                    
-                    // Panneau principal avec BorderLayout
-                    JPanel mainPanel = new JPanel(new BorderLayout());
+                editPizzaDialog.setLocationRelativeTo(this);
+                editPizzaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                
+                // Panneau principal avec BorderLayout
+                JPanel mainPanel = new JPanel(new BorderLayout());
                     mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
                     
                     // Panneau de formulaire avec GridBagLayout
@@ -1030,8 +1030,8 @@ public class MainFrame extends JFrame {
                     gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
                     
                     JPanel editImagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-                    JTextField imagePathField = new JTextField(15);
-                    imagePathField.setEditable(false);
+                JTextField imagePathField = new JTextField(15);
+                imagePathField.setEditable(false);
                     JButton browseButton = new JButton("Changer...");
                     JButton removeImageButton = new JButton("Supprimer image");
                     editImagePanel.add(imagePathField);
@@ -1050,33 +1050,33 @@ public class MainFrame extends JFrame {
                     if (currentImageFile.exists()) {
                         imagePathField.setText("Image actuelle : " + currentImageFile.getName());
                     }
-                    
-                    // Action du bouton Parcourir
-                    browseButton.addActionListener(imgEvent -> {
-                        JFileChooser fileChooser = new JFileChooser();
+                
+                // Action du bouton Parcourir
+                browseButton.addActionListener(imgEvent -> {
+                    JFileChooser fileChooser = new JFileChooser();
                         fileChooser.setDialogTitle("Sélectionner une nouvelle image");
-                        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                            @Override
-                            public boolean accept(File f) {
-                                if (f.isDirectory()) return true;
-                                String name = f.getName().toLowerCase();
-                                return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
-                                       name.endsWith(".png") || name.endsWith(".gif");
-                            }
-                            
-                            @Override
-                            public String getDescription() {
-                                return "Images (*.jpg, *.jpeg, *.png, *.gif)";
-                            }
-                        });
+                    fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                        @Override
+                        public boolean accept(File f) {
+                            if (f.isDirectory()) return true;
+                            String name = f.getName().toLowerCase();
+                            return name.endsWith(".jpg") || name.endsWith(".jpeg") || 
+                                   name.endsWith(".png") || name.endsWith(".gif");
+                        }
                         
-                        int result = fileChooser.showOpenDialog(editPizzaDialog);
-                        if (result == JFileChooser.APPROVE_OPTION) {
-                            File selectedFile = fileChooser.getSelectedFile();
-                            imagePathField.setText(selectedFile.getAbsolutePath());
+                        @Override
+                        public String getDescription() {
+                            return "Images (*.jpg, *.jpeg, *.png, *.gif)";
                         }
                     });
                     
+                    int result = fileChooser.showOpenDialog(editPizzaDialog);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = fileChooser.getSelectedFile();
+                        imagePathField.setText(selectedFile.getAbsolutePath());
+                    }
+                });
+                
                     // Action du bouton Supprimer image
                     removeImageButton.addActionListener(imgEvent -> {
                         imagePathField.setText("");
@@ -1086,58 +1086,58 @@ public class MainFrame extends JFrame {
                     gbc.gridx = 0; gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
                     formPanel.add(new JLabel("Ingrédients :"), gbc);
                     gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 1.0;
-                    
-                    // Récupération de tous les ingrédients
-                    IngredientDAO ingredientDAO = new IngredientDAO();
-                    List<Ingredient> allIngredients = ingredientDAO.trouverTous();
-                    
-                    // Panneau avec JCheckBox pour sélectionner les ingrédients
-                    JPanel ingredientsPanel = new JPanel();
-                    ingredientsPanel.setLayout(new BoxLayout(ingredientsPanel, BoxLayout.Y_AXIS));
+                
+                // Récupération de tous les ingrédients
+                IngredientDAO ingredientDAO = new IngredientDAO();
+                List<Ingredient> allIngredients = ingredientDAO.trouverTous();
+                
+                // Panneau avec JCheckBox pour sélectionner les ingrédients
+                JPanel ingredientsPanel = new JPanel();
+                ingredientsPanel.setLayout(new BoxLayout(ingredientsPanel, BoxLayout.Y_AXIS));
                     ingredientsPanel.setBorder(BorderFactory.createTitledBorder("Sélectionnez les ingrédients"));
-                    
-                    // Map pour stocker les checkboxes par ingrédient
-                    Map<Ingredient, JCheckBox> ingredientCheckboxes = new HashMap<>();
-                    
+                
+                // Map pour stocker les checkboxes par ingrédient
+                Map<Ingredient, JCheckBox> ingredientCheckboxes = new HashMap<>();
+                
                     // Récupérer les ingrédients actuels de la pizza
-                    List<Ingredient> currentIngredients = currentPizza.getIngredients();
-                    
-                    for (Ingredient ingredient : allIngredients) {
-                        JCheckBox checkBox = new JCheckBox(ingredient.getNom());
+                List<Ingredient> currentIngredients = currentPizza.getIngredients();
+                
+                for (Ingredient ingredient : allIngredients) {
+                    JCheckBox checkBox = new JCheckBox(ingredient.getNom());
                         checkBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
-                        
-                        // Présélectionner si l'ingrédient fait partie de la pizza
-                        if (currentIngredients != null) {
-                            for (Ingredient pizzaIngredient : currentIngredients) {
-                                if (pizzaIngredient.getIdIngredient() == ingredient.getIdIngredient()) {
-                                    checkBox.setSelected(true);
-                                    break;
-                                }
+                    
+                    // Présélectionner si l'ingrédient fait partie de la pizza
+                    if (currentIngredients != null) {
+                        for (Ingredient pizzaIngredient : currentIngredients) {
+                            if (pizzaIngredient.getIdIngredient() == ingredient.getIdIngredient()) {
+                                checkBox.setSelected(true);
+                                break;
                             }
                         }
-                        
-                        ingredientCheckboxes.put(ingredient, checkBox);
-                        ingredientsPanel.add(checkBox);
                     }
                     
-                    // Bouton pour ajouter un nouvel ingrédient
+                    ingredientCheckboxes.put(ingredient, checkBox);
+                    ingredientsPanel.add(checkBox);
+                }
+                
+                // Bouton pour ajouter un nouvel ingrédient
                     JButton addIngredientButton = new JButton("+ Nouvel ingrédient");
                     addIngredientButton.setPreferredSize(new Dimension(150, 30));
                     ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                    ingredientsPanel.add(addIngredientButton);
-                    
-                    // Panneau de défilement pour les ingrédients
-                    JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsPanel);
+                ingredientsPanel.add(addIngredientButton);
+                
+                // Panneau de défilement pour les ingrédients
+                JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsPanel);
                     ingredientsScrollPane.setPreferredSize(new Dimension(300, 200));
                     ingredientsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     formPanel.add(ingredientsScrollPane, gbc);
-                    
-                    // Action du bouton pour ajouter un nouvel ingrédient
-                    addIngredientButton.addActionListener(event -> {
-                        JDialog addIngredientDialog = new JDialog(editPizzaDialog, "Ajouter un ingrédient", true);
+                
+                // Action du bouton pour ajouter un nouvel ingrédient
+                addIngredientButton.addActionListener(event -> {
+                    JDialog addIngredientDialog = new JDialog(editPizzaDialog, "Ajouter un ingrédient", true);
                         addIngredientDialog.setSize(350, 200);
-                        addIngredientDialog.setLocationRelativeTo(editPizzaDialog);
-                        
+                    addIngredientDialog.setLocationRelativeTo(editPizzaDialog);
+                    
                         JPanel ingPanel = new JPanel(new GridBagLayout());
                         GridBagConstraints ingGbc = new GridBagConstraints();
                         ingGbc.insets = new Insets(10, 10, 10, 10);
@@ -1152,81 +1152,81 @@ public class MainFrame extends JFrame {
                         ingGbc.gridx = 0; ingGbc.gridy = 1; ingGbc.fill = GridBagConstraints.NONE; ingGbc.weightx = 0;
                         ingPanel.add(new JLabel("Stock initial :"), ingGbc);
                         ingGbc.gridx = 1; ingGbc.fill = GridBagConstraints.HORIZONTAL; ingGbc.weightx = 1.0;
-                        JTextField stockField = new JTextField("100");
+                    JTextField stockField = new JTextField("100");
                         ingPanel.add(stockField, ingGbc);
-                        
+                    
                         JPanel ingButtonPanel = new JPanel(new FlowLayout());
-                        JButton ingSaveButton = new JButton("Ajouter");
-                        JButton ingCancelButton = new JButton("Annuler");
-                        ingButtonPanel.add(ingSaveButton);
-                        ingButtonPanel.add(ingCancelButton);
-                        
-                        JPanel ingMainPanel = new JPanel(new BorderLayout());
-                        ingMainPanel.add(ingPanel, BorderLayout.CENTER);
-                        ingMainPanel.add(ingButtonPanel, BorderLayout.SOUTH);
-                        
-                        addIngredientDialog.setContentPane(ingMainPanel);
-                        
-                        // Action du bouton de sauvegarde d'ingrédient
-                        ingSaveButton.addActionListener(ingEvent -> {
-                            try {
-                                String nomIngredient = ingNameField.getText().trim();
-                                int stockInitial = Integer.parseInt(stockField.getText().trim());
-                                
-                                if (nomIngredient.isEmpty()) {
-                                    JOptionPane.showMessageDialog(addIngredientDialog, 
-                                        "Veuillez saisir un nom d'ingrédient", 
-                                        "Champ requis", 
-                                        JOptionPane.WARNING_MESSAGE);
-                                    return;
-                                }
-                                
-                                // Créer et sauvegarder le nouvel ingrédient
-                                Ingredient newIngredient = new Ingredient(nomIngredient, stockInitial);
-                                if (ingredientDAO.inserer(newIngredient)) {
-                                    // Ajouter l'ingrédient à la liste et la checkbox
-                                    JCheckBox newCheckBox = new JCheckBox(newIngredient.getNom());
-                                    newCheckBox.setSelected(true); // Sélectionner par défaut
-                                    newCheckBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
-                                    ingredientCheckboxes.put(newIngredient, newCheckBox);
-                                    
-                                    // Ajouter avant le bouton
-                                    ingredientsPanel.remove(addIngredientButton);
-                                    ingredientsPanel.remove(ingredientsPanel.getComponentCount() - 1); // Retirer l'espacement
-                                    ingredientsPanel.add(newCheckBox);
-                                    ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                                    ingredientsPanel.add(addIngredientButton);
-                                    
-                                    // Rafraîchir l'affichage
-                                    ingredientsPanel.revalidate();
-                                    ingredientsPanel.repaint();
-                                    
-                                    addIngredientDialog.dispose();
-                                    
-                                    JOptionPane.showMessageDialog(editPizzaDialog, 
-                                        "Ingrédient '" + nomIngredient + "' ajouté avec succès !", 
-                                        "Succès", 
-                                        JOptionPane.INFORMATION_MESSAGE);
-                                } else {
-                                    JOptionPane.showMessageDialog(addIngredientDialog, 
-                                        "Erreur lors de l'ajout de l'ingrédient", 
-                                        "Erreur", 
-                                        JOptionPane.ERROR_MESSAGE);
-                                }
-                            } catch (NumberFormatException ex) {
+                    JButton ingSaveButton = new JButton("Ajouter");
+                    JButton ingCancelButton = new JButton("Annuler");
+                    ingButtonPanel.add(ingSaveButton);
+                    ingButtonPanel.add(ingCancelButton);
+                    
+                    JPanel ingMainPanel = new JPanel(new BorderLayout());
+                    ingMainPanel.add(ingPanel, BorderLayout.CENTER);
+                    ingMainPanel.add(ingButtonPanel, BorderLayout.SOUTH);
+                    
+                    addIngredientDialog.setContentPane(ingMainPanel);
+                    
+                    // Action du bouton de sauvegarde d'ingrédient
+                    ingSaveButton.addActionListener(ingEvent -> {
+                        try {
+                            String nomIngredient = ingNameField.getText().trim();
+                            int stockInitial = Integer.parseInt(stockField.getText().trim());
+                            
+                            if (nomIngredient.isEmpty()) {
                                 JOptionPane.showMessageDialog(addIngredientDialog, 
-                                    "Veuillez saisir un nombre valide pour le stock", 
-                                    "Erreur de format", 
+                                    "Veuillez saisir un nom d'ingrédient", 
+                                    "Champ requis", 
+                                    JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            
+                            // Créer et sauvegarder le nouvel ingrédient
+                            Ingredient newIngredient = new Ingredient(nomIngredient, stockInitial);
+                            if (ingredientDAO.inserer(newIngredient)) {
+                                // Ajouter l'ingrédient à la liste et la checkbox
+                                JCheckBox newCheckBox = new JCheckBox(newIngredient.getNom());
+                                newCheckBox.setSelected(true); // Sélectionner par défaut
+                                    newCheckBox.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+                                ingredientCheckboxes.put(newIngredient, newCheckBox);
+                                
+                                // Ajouter avant le bouton
+                                ingredientsPanel.remove(addIngredientButton);
+                                    ingredientsPanel.remove(ingredientsPanel.getComponentCount() - 1); // Retirer l'espacement
+                                ingredientsPanel.add(newCheckBox);
+                                    ingredientsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                                ingredientsPanel.add(addIngredientButton);
+                                
+                                // Rafraîchir l'affichage
+                                ingredientsPanel.revalidate();
+                                ingredientsPanel.repaint();
+                                
+                                addIngredientDialog.dispose();
+                                    
+                                JOptionPane.showMessageDialog(editPizzaDialog, 
+                                    "Ingrédient '" + nomIngredient + "' ajouté avec succès !", 
+                                    "Succès", 
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(addIngredientDialog, 
+                                    "Erreur lors de l'ajout de l'ingrédient", 
+                                    "Erreur", 
                                     JOptionPane.ERROR_MESSAGE);
                             }
-                        });
-                        
-                        // Action du bouton d'annulation d'ingrédient
-                        ingCancelButton.addActionListener(ingEvent -> addIngredientDialog.dispose());
-                        
-                        addIngredientDialog.setVisible(true);
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(addIngredientDialog, 
+                                "Veuillez saisir un nombre valide pour le stock", 
+                                "Erreur de format", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
                     });
                     
+                    // Action du bouton d'annulation d'ingrédient
+                    ingCancelButton.addActionListener(ingEvent -> addIngredientDialog.dispose());
+                    
+                    addIngredientDialog.setVisible(true);
+                });
+                
                     // Panneau pour les boutons principaux
                     JPanel editButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
                     JButton saveButton = new JButton("Enregistrer les modifications");
@@ -1245,31 +1245,31 @@ public class MainFrame extends JFrame {
                     editPizzaDialog.setContentPane(mainPanel);
                     
                     // Action du bouton d'enregistrement des modifications
-                    saveButton.addActionListener(event -> {
-                        try {
-                            String nomPizza = nameField.getText().trim();
-                            String prixText = priceField.getText().trim().replace(',', '.');
-                            String imagePath = imagePathField.getText().trim();
-                            
-                            // Validation des champs
-                            if (nomPizza.isEmpty()) {
-                                JOptionPane.showMessageDialog(editPizzaDialog, 
-                                    "Veuillez saisir un nom pour la pizza", 
-                                    "Champ requis", 
-                                    JOptionPane.WARNING_MESSAGE);
+                saveButton.addActionListener(event -> {
+                    try {
+                        String nomPizza = nameField.getText().trim();
+                        String prixText = priceField.getText().trim().replace(',', '.');
+                        String imagePath = imagePathField.getText().trim();
+                        
+                        // Validation des champs
+                        if (nomPizza.isEmpty()) {
+                            JOptionPane.showMessageDialog(editPizzaDialog, 
+                                "Veuillez saisir un nom pour la pizza", 
+                                "Champ requis", 
+                                JOptionPane.WARNING_MESSAGE);
                                 nameField.requestFocus();
-                                return;
-                            }
-                            
-                            if (prixText.isEmpty()) {
-                                JOptionPane.showMessageDialog(editPizzaDialog, 
-                                    "Veuillez saisir un prix pour la pizza", 
-                                    "Champ requis", 
-                                    JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        
+                        if (prixText.isEmpty()) {
+                            JOptionPane.showMessageDialog(editPizzaDialog, 
+                                "Veuillez saisir un prix pour la pizza", 
+                                "Champ requis", 
+                                JOptionPane.WARNING_MESSAGE);
                                 priceField.requestFocus();
-                                return;
-                            }
-                            
+                            return;
+                        }
+                        
                             double prixBase;
                             try {
                                 prixBase = Double.parseDouble(prixText);
@@ -1301,41 +1301,41 @@ public class MainFrame extends JFrame {
                                     JOptionPane.WARNING_MESSAGE);
                                 return;
                             }
-                            
-                            // Mettre à jour les propriétés de la pizza
-                            currentPizza.setNom(nomPizza);
-                            currentPizza.setPrixBase(prixBase);
-                            
-                            // Mettre à jour les ingrédients
-                            currentPizza.viderIngredients();
-                            for (Map.Entry<Ingredient, JCheckBox> entry : ingredientCheckboxes.entrySet()) {
-                                if (entry.getValue().isSelected()) {
-                                    currentPizza.ajouterIngredient(entry.getKey());
-                                }
+                        
+                        // Mettre à jour les propriétés de la pizza
+                        currentPizza.setNom(nomPizza);
+                        currentPizza.setPrixBase(prixBase);
+                        
+                        // Mettre à jour les ingrédients
+                        currentPizza.viderIngredients();
+                        for (Map.Entry<Ingredient, JCheckBox> entry : ingredientCheckboxes.entrySet()) {
+                            if (entry.getValue().isSelected()) {
+                                currentPizza.ajouterIngredient(entry.getKey());
                             }
-                            
-                            // Sauvegarder la pizza modifiée dans la base de données
+                        }
+                        
+                        // Sauvegarder la pizza modifiée dans la base de données
                             PizzaDAO editPizzaDAO = new PizzaDAO();
                             boolean success = editPizzaDAO.mettreAJour(currentPizza);
-                            
-                            if (success) {
+                        
+                        if (success) {
                                 // Gestion de l'image
                                 if (!imagePath.isEmpty() && !imagePath.startsWith("Image actuelle")) {
                                     // Nouvelle image sélectionnée
-                                    try {
-                                        File sourceFile = new File(imagePath);
-                                        String fileName = sourceFile.getName();
+                                try {
+                                    File sourceFile = new File(imagePath);
+                                    String fileName = sourceFile.getName();
                                         String extension = fileName.substring(fileName.lastIndexOf('.'));
-                                        
+                                    
                                         // Déterminer le nom du fichier de destination
                                         String destinationFileName = trouverNomImagePizza(nomPizza) + extension;
-                                        
-                                        // Créer le dossier assets s'il n'existe pas
-                                        File assetsDir = new File("assets");
-                                        if (!assetsDir.exists()) {
-                                            assetsDir.mkdir();
-                                        }
-                                        
+                                    
+                                    // Créer le dossier assets s'il n'existe pas
+                                    File assetsDir = new File("assets");
+                                    if (!assetsDir.exists()) {
+                                        assetsDir.mkdir();
+                                    }
+                                    
                                         // Supprimer l'ancienne image si elle existe
                                         File oldImageJpg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpg");
                                         File oldImageJpeg = new File("assets/" + trouverNomImagePizza(currentPizza.getNom()) + ".jpeg");
@@ -1344,14 +1344,14 @@ public class MainFrame extends JFrame {
                                         
                                         // Copier la nouvelle image
                                         File destinationFile = new File("assets/" + destinationFileName);
-                                        java.nio.file.Files.copy(
-                                            sourceFile.toPath(),
-                                            destinationFile.toPath(),
-                                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                                        );
-                                        
+                                    java.nio.file.Files.copy(
+                                        sourceFile.toPath(),
+                                        destinationFile.toPath(),
+                                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                    );
+                                    
                                         System.out.println("Image mise à jour : " + destinationFile.getAbsolutePath());
-                                    } catch (Exception ex) {
+                                } catch (Exception ex) {
                                         System.err.println("Erreur lors de la mise à jour de l'image : " + ex.getMessage());
                                     }
                                 } else if (imagePath.isEmpty()) {
@@ -1369,67 +1369,68 @@ public class MainFrame extends JFrame {
                                         }
                                     } catch (Exception ex) {
                                         System.err.println("Erreur lors de la suppression de l'image : " + ex.getMessage());
-                                    }
                                 }
-                                
-                                JOptionPane.showMessageDialog(editPizzaDialog, 
-                                    "Pizza '" + nomPizza + "' modifiée avec succès !", 
-                                    "Succès", 
-                                    JOptionPane.INFORMATION_MESSAGE);
-                                
-                                // Rafraîchir l'affichage des pizzas
-                                chargerPizzasDansPanel(pizzasPanel, query);
-                                
-                                editPizzaDialog.dispose();
-                            } else {
-                                JOptionPane.showMessageDialog(editPizzaDialog, 
-                                    "Erreur lors de la modification de la pizza", 
-                                    "Erreur", 
-                                    JOptionPane.ERROR_MESSAGE);
                             }
-                        } catch (Exception ex) {
+                            
                             JOptionPane.showMessageDialog(editPizzaDialog, 
-                                "Erreur inattendue : " + ex.getMessage(), 
-                                "Erreur", 
-                                JOptionPane.ERROR_MESSAGE);
-                            ex.printStackTrace();
-                        }
-                    });
-                    
-                    // Action du bouton d'annulation
-                    cancelButton.addActionListener(event -> editPizzaDialog.dispose());
-                    
-                    editPizzaDialog.setVisible(true);
-                });
-                
-                // Bouton Supprimer
-                deleteButton.addActionListener(e -> {
-                    // Demander confirmation avant de supprimer
-                    int confirmation = JOptionPane.showConfirmDialog(this,
-                        "Êtes-vous sûr de vouloir supprimer la pizza '" + currentPizza.getNom() + "' ?",
-                        "Confirmation de suppression",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-                    
-                    if (confirmation == JOptionPane.YES_OPTION) {
-                        PizzaDAO pizzaDAODelete = new PizzaDAO();
-                        if (pizzaDAODelete.supprimer(currentPizza.getIdPizza())) {
-                            JOptionPane.showMessageDialog(this,
-                                "Pizza supprimée avec succès",
-                                "Succès",
+                                    "Pizza '" + nomPizza + "' modifiée avec succès !", 
+                                "Succès", 
                                 JOptionPane.INFORMATION_MESSAGE);
                             
-                            // Rafraîchir l'affichage
-                            chargerPizzasDansPanel(pizzasPanel, query);
+                            // Rafraîchir l'affichage des pizzas
+                                chargerPizzasDansPanel(pizzasPanel, query);
+                            
+                            editPizzaDialog.dispose();
                         } else {
-                            JOptionPane.showMessageDialog(this,
-                                "Erreur lors de la suppression de la pizza",
-                                "Erreur",
+                            JOptionPane.showMessageDialog(editPizzaDialog, 
+                                "Erreur lors de la modification de la pizza", 
+                                "Erreur", 
                                 JOptionPane.ERROR_MESSAGE);
                         }
+                        } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(editPizzaDialog, 
+                                "Erreur inattendue : " + ex.getMessage(), 
+                                "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
                     }
                 });
-            }
+                
+                // Action du bouton d'annulation
+                cancelButton.addActionListener(event -> editPizzaDialog.dispose());
+                
+                editPizzaDialog.setVisible(true);
+            });
+            
+            // Bouton Supprimer
+            deleteButton.addActionListener(e -> {
+                // Demander confirmation avant de supprimer
+                int confirmation = JOptionPane.showConfirmDialog(this,
+                    "Êtes-vous sûr de vouloir supprimer la pizza '" + currentPizza.getNom() + "' ?",
+                    "Confirmation de suppression",
+                    JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    PizzaDAO pizzaDAODelete = new PizzaDAO();
+                    if (pizzaDAODelete.supprimer(currentPizza.getIdPizza())) {
+                        JOptionPane.showMessageDialog(this,
+                            "Pizza supprimée avec succès",
+                            "Succès",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Rafraîchir l'affichage
+                            chargerPizzasDansPanel(pizzasPanel, query);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Erreur lors de la suppression de la pizza",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+        }
         }
         
         // Rafraîchir l'affichage
@@ -1515,12 +1516,1168 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // À implémenter : création de commandes, suivi des commandes, etc.
-        JLabel label = new JLabel("Gestion des commandes");
-        label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // Panneau de contrôles en haut
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Rechercher");
+        JButton addButton = new JButton("Nouvelle commande");
+        JButton refreshButton = new JButton("Actualiser");
+        
+        // ComboBox pour filtrer par statut
+        JComboBox<String> statusFilter = new JComboBox<>();
+        statusFilter.addItem("Tous les statuts");
+        statusFilter.addItem("En préparation");
+        statusFilter.addItem("En livraison");
+        statusFilter.addItem("Livrée");
+        statusFilter.addItem("Annulée");
+        
+        controlPanel.add(new JLabel("🔍 Rechercher client :"));
+        controlPanel.add(searchField);
+        controlPanel.add(searchButton);
+        controlPanel.add(Box.createHorizontalStrut(20));
+        controlPanel.add(new JLabel("Statut :"));
+        controlPanel.add(statusFilter);
+        controlPanel.add(Box.createHorizontalStrut(20));
+        controlPanel.add(addButton);
+        controlPanel.add(refreshButton);
+        
+        panel.add(controlPanel, BorderLayout.NORTH);
+        
+        // Tableau des commandes
+        String[] columnNames = {
+            "ID", "Date", "Heure", "Client", "Statut", "Total (€)", "Gratuite", "Actions"
+        };
+        
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+                    @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 7; // Seule la colonne Actions est éditable
+            }
+        };
+        
+        JTable commandesTable = new JTable(tableModel);
+        commandesTable.setRowHeight(50); // Augmenter encore plus la hauteur des lignes
+        
+        // Désactiver la sélection des lignes pour éviter la surbrillance bleue
+        commandesTable.setRowSelectionAllowed(false);
+        commandesTable.setColumnSelectionAllowed(false);
+        commandesTable.setCellSelectionEnabled(false);
+        
+        commandesTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // ID
+        commandesTable.getColumnModel().getColumn(1).setPreferredWidth(100); // Date
+        commandesTable.getColumnModel().getColumn(2).setPreferredWidth(80);  // Heure
+        commandesTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Client
+        commandesTable.getColumnModel().getColumn(4).setPreferredWidth(120); // Statut
+        commandesTable.getColumnModel().getColumn(5).setPreferredWidth(80);  // Total
+        commandesTable.getColumnModel().getColumn(6).setPreferredWidth(80);  // Gratuite
+        commandesTable.getColumnModel().getColumn(7).setPreferredWidth(280); // Actions - largeur beaucoup plus grande
+        
+        // Renderer personnalisé pour la colonne Actions
+        commandesTable.getColumnModel().getColumn(7).setCellRenderer(new javax.swing.table.TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+                    boolean hasFocus, int row, int column) {
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+                
+                JButton detailsButton = new JButton("Détails");
+                JButton editButton = new JButton("Modifier");
+                JButton deleteButton = new JButton("Supprimer");
+                
+                // Boutons beaucoup plus gros et lisibles
+                detailsButton.setPreferredSize(new Dimension(80, 35));
+                editButton.setPreferredSize(new Dimension(80, 35));
+                deleteButton.setPreferredSize(new Dimension(90, 35));
+                
+                // Police plus grande et en gras
+                Font buttonFont = new Font("Dialog", Font.BOLD, 12);
+                detailsButton.setFont(buttonFont);
+                editButton.setFont(buttonFont);
+                deleteButton.setFont(buttonFont);
+                
+                // Couleurs pour différencier les boutons
+                detailsButton.setBackground(new Color(173, 216, 230)); // Bleu clair
+                editButton.setBackground(new Color(255, 255, 224)); // Jaune clair
+                deleteButton.setBackground(new Color(255, 182, 193)); // Rose clair
+                
+                detailsButton.setForeground(Color.BLACK);
+                editButton.setForeground(Color.BLACK);
+                deleteButton.setForeground(Color.BLACK);
+                
+                // Rendre les boutons opaques
+                detailsButton.setOpaque(true);
+                editButton.setOpaque(true);
+                deleteButton.setOpaque(true);
+                
+                buttonPanel.add(detailsButton);
+                buttonPanel.add(editButton);
+                buttonPanel.add(deleteButton);
+                
+                // Toujours garder le même fond, ignorer la sélection
+                buttonPanel.setBackground(table.getBackground());
+                
+                return buttonPanel;
+            }
+        });
+        
+        // Editor personnalisé pour la colonne Actions
+        commandesTable.getColumnModel().getColumn(7).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+            private JPanel buttonPanel;
+            private int currentRow;
+            
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                currentRow = row;
+                buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+                
+                JButton detailsButton = new JButton("Détails");
+                JButton editButton = new JButton("Modifier");
+                JButton deleteButton = new JButton("Supprimer");
+                
+                // Boutons beaucoup plus gros et lisibles
+                detailsButton.setPreferredSize(new Dimension(80, 35));
+                editButton.setPreferredSize(new Dimension(80, 35));
+                deleteButton.setPreferredSize(new Dimension(90, 35));
+                
+                // Police plus grande et en gras
+                Font buttonFont = new Font("Dialog", Font.BOLD, 12);
+                detailsButton.setFont(buttonFont);
+                editButton.setFont(buttonFont);
+                deleteButton.setFont(buttonFont);
+                
+                // Couleurs pour différencier les boutons
+                detailsButton.setBackground(new Color(173, 216, 230)); // Bleu clair
+                editButton.setBackground(new Color(255, 255, 224)); // Jaune clair
+                deleteButton.setBackground(new Color(255, 182, 193)); // Rose clair
+                
+                detailsButton.setForeground(Color.BLACK);
+                editButton.setForeground(Color.BLACK);
+                deleteButton.setForeground(Color.BLACK);
+                
+                // Rendre les boutons opaques pour que les couleurs s'affichent
+                detailsButton.setOpaque(true);
+                editButton.setOpaque(true);
+                deleteButton.setOpaque(true);
+                
+                // Actions des boutons
+                detailsButton.addActionListener(e -> {
+                    stopCellEditing();
+                    afficherDetailsCommande(currentRow, commandesTable);
+                });
+                
+                editButton.addActionListener(e -> {
+                    stopCellEditing();
+                    modifierCommande(currentRow, commandesTable);
+                });
+                
+                deleteButton.addActionListener(e -> {
+                    stopCellEditing();
+                    supprimerCommande(currentRow, commandesTable);
+                });
+                
+                buttonPanel.add(detailsButton);
+                buttonPanel.add(editButton);
+                buttonPanel.add(deleteButton);
+                
+                return buttonPanel;
+            }
+            
+            @Override
+            public Object getCellEditorValue() {
+                return "";
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane(commandesTable);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        // Charger les commandes au démarrage
+        chargerCommandes(tableModel, null, "Tous les statuts");
+        
+        // Actions des boutons de contrôle
+        searchButton.addActionListener(e -> {
+            String searchTerm = searchField.getText().trim();
+            String selectedStatus = (String) statusFilter.getSelectedItem();
+            chargerCommandes(tableModel, searchTerm.isEmpty() ? null : searchTerm, selectedStatus);
+        });
+        
+        statusFilter.addActionListener(e -> {
+            String searchTerm = searchField.getText().trim();
+            String selectedStatus = (String) statusFilter.getSelectedItem();
+            chargerCommandes(tableModel, searchTerm.isEmpty() ? null : searchTerm, selectedStatus);
+        });
+        
+        refreshButton.addActionListener(e -> {
+            searchField.setText("");
+            statusFilter.setSelectedIndex(0);
+            chargerCommandes(tableModel, null, "Tous les statuts");
+        });
+        
+        addButton.addActionListener(e -> {
+            creerNouvelleCommande(tableModel);
+        });
+        
+        // Recherche en temps réel
+        searchField.addActionListener(e -> searchButton.doClick());
         
         return panel;
+    }
+    
+    /**
+     * Charge les commandes dans le tableau
+     */
+    private void chargerCommandes(DefaultTableModel tableModel, String searchTerm, String statusFilter) {
+        try {
+            tableModel.setRowCount(0); // Vider le tableau
+            
+            CommandeDAO commandeDAO = new CommandeDAO();
+            List<Commande> commandes = commandeDAO.trouverTousSansDetails(); // Utiliser la méthode sans détails
+            
+            for (Commande commande : commandes) {
+                // Filtrer par terme de recherche (nom du client)
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    String nomComplet = (commande.getClient().getNom() + " " + commande.getClient().getPrenom()).toLowerCase();
+                    if (!nomComplet.contains(searchTerm.toLowerCase())) {
+                        continue;
+                    }
+                }
+                
+                // Filtrer par statut
+                if (statusFilter != null && !statusFilter.equals("Tous les statuts")) {
+                    String statutCommande = statutEnumVersString(commande.getStatut());
+                    if (!statutCommande.equals(statusFilter)) {
+                        continue;
+                    }
+                }
+                
+                // Calculer le total directement depuis la base de données
+                double total = commandeDAO.calculerMontantTotal(commande.getIdCommande());
+                
+                Object[] row = {
+                    commande.getIdCommande(),
+                    commande.getDateCommande().toString(),
+                    commande.getHeureCommande().toString(),
+                    commande.getClient().getNom() + " " + commande.getClient().getPrenom(),
+                    formatStatut(commande.getStatut()),
+                    String.format("%.2f€", total),
+                    commande.isEstGratuite() ? "Oui" : "Non",
+                    "Actions"
+                };
+                
+                tableModel.addRow(row);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement des commandes : " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors du chargement des commandes : " + e.getMessage(), 
+                                "Erreur", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+    }
+    
+    /**
+     * Convertit une énumération de statut en chaîne pour la ComboBox
+     */
+    private String statutEnumVersString(Commande.Statut statut) {
+        switch (statut) {
+            case EN_PREPARATION: return "En préparation";
+            case EN_LIVRAISON: return "En livraison";
+            case LIVREE: return "Livrée";
+            case ANNULEE: return "Annulée";
+            default: return "En préparation";
+        }
+    }
+
+    /**
+     * Convertit une chaîne de statut en énumération
+     */
+    private Commande.Statut convertirStatutString(String statut) {
+        switch (statut) {
+            case "En préparation": return Commande.Statut.EN_PREPARATION;
+            case "En livraison": return Commande.Statut.EN_LIVRAISON;
+            case "Livrée": return Commande.Statut.LIVREE;
+            case "Annulée": return Commande.Statut.ANNULEE;
+            default: return Commande.Statut.EN_PREPARATION;
+        }
+    }
+    
+    /**
+     * Formate le statut pour l'affichage
+     */
+    private String formatStatut(Commande.Statut statut) {
+        switch (statut) {
+            case EN_PREPARATION: return "🔄 En préparation";
+            case EN_LIVRAISON: return "🚚 En livraison";
+            case LIVREE: return "✅ Livrée";
+            case ANNULEE: return "❌ Annulée";
+            default: return statut.toString();
+        }
+    }
+    
+    /**
+     * Affiche les détails d'une commande
+     */
+    private void afficherDetailsCommande(int row, JTable table) {
+        try {
+            int idCommande = (int) table.getValueAt(row, 0);
+            CommandeDAO commandeDAO = new CommandeDAO();
+            DetailCommandeDAO detailCommandeDAO = new DetailCommandeDAO();
+            
+            // Récupérer la commande sans les détails pour éviter la récursion
+            Commande commande = commandeDAO.trouverParIdSansDetails(idCommande);
+            
+            if (commande == null) {
+                JOptionPane.showMessageDialog(this, "Commande introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
+            // Charger les détails séparément
+            List<DetailCommande> details = detailCommandeDAO.trouverParCommande(idCommande);
+            
+            // Créer une fenêtre de détails
+            JDialog detailsDialog = new JDialog(this, "Détails de la commande #" + idCommande, true);
+            detailsDialog.setSize(600, 400);
+            detailsDialog.setLocationRelativeTo(this);
+            
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            // Informations générales
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            gbc.gridx = 0; gbc.gridy = 0;
+            infoPanel.add(new JLabel("Commande #:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(String.valueOf(commande.getIdCommande())), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 1;
+            infoPanel.add(new JLabel("Date:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(commande.getDateCommande().toString()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 2;
+            infoPanel.add(new JLabel("Heure:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(commande.getHeureCommande().toString()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 3;
+            infoPanel.add(new JLabel("Client:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(commande.getClient().getNom() + " " + commande.getClient().getPrenom()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 4;
+            infoPanel.add(new JLabel("Statut:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(formatStatut(commande.getStatut())), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 5;
+            infoPanel.add(new JLabel("Gratuite:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(commande.isEstGratuite() ? "Oui" : "Non"), gbc);
+            
+            mainPanel.add(infoPanel, BorderLayout.NORTH);
+            
+            // Détails des pizzas commandées
+            String[] detailColumns = {"Pizza", "Taille", "Quantité", "Prix unitaire", "Sous-total"};
+            DefaultTableModel detailModel = new DefaultTableModel(detailColumns, 0);
+            JTable detailTable = new JTable(detailModel);
+            
+            double total = 0.0;
+            for (DetailCommande detail : details) {
+                Object[] detailRow = {
+                    detail.getPizza().getNom(),
+                    detail.getTaille().getLibelle(),
+                    detail.getQuantite(),
+                    String.format("%.2f€", detail.getPrixUnitaire()),
+                    String.format("%.2f€", detail.calculerSousTotal())
+                };
+                detailModel.addRow(detailRow);
+                total += detail.calculerSousTotal();
+            }
+            
+            JScrollPane detailScrollPane = new JScrollPane(detailTable);
+            detailScrollPane.setBorder(BorderFactory.createTitledBorder("Pizzas commandées"));
+            mainPanel.add(detailScrollPane, BorderLayout.CENTER);
+            
+            // Total
+            JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            totalPanel.add(new JLabel("Total: " + String.format("%.2f€", total)));
+            mainPanel.add(totalPanel, BorderLayout.SOUTH);
+            
+            detailsDialog.setContentPane(mainPanel);
+            detailsDialog.setVisible(true);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de l'affichage des détails : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Modifie une commande complètement (pizzas, quantités, statut)
+     */
+    private void modifierCommande(int row, JTable table) {
+        try {
+            int idCommande = (int) table.getValueAt(row, 0);
+            CommandeDAO commandeDAO = new CommandeDAO();
+            DetailCommandeDAO detailCommandeDAO = new DetailCommandeDAO();
+            
+            // Récupérer la commande sans les détails pour éviter la récursion
+            Commande commande = commandeDAO.trouverParIdSansDetails(idCommande);
+            
+            if (commande == null) {
+                JOptionPane.showMessageDialog(this, "Commande introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Vérifier si la commande peut être modifiée
+            boolean peutModifierContenu = commande.getStatut() == Commande.Statut.EN_PREPARATION;
+            
+            // Créer la fenêtre de modification
+            JDialog editDialog = new JDialog(this, "Modifier la commande #" + idCommande, true);
+            editDialog.setSize(900, 700);
+            editDialog.setLocationRelativeTo(this);
+            
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            // Informations générales en haut
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de la commande"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            gbc.gridx = 0; gbc.gridy = 0;
+            infoPanel.add(new JLabel("Commande #:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(String.valueOf(commande.getIdCommande())), gbc);
+            
+            gbc.gridx = 2; gbc.gridy = 0;
+            infoPanel.add(new JLabel("Date:"), gbc);
+            gbc.gridx = 3;
+            infoPanel.add(new JLabel(commande.getDateCommande().toString()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 1;
+            infoPanel.add(new JLabel("Client:"), gbc);
+            gbc.gridx = 1; gbc.gridwidth = 3;
+            infoPanel.add(new JLabel(commande.getClient().getNom() + " " + commande.getClient().getPrenom()), gbc);
+            gbc.gridwidth = 1;
+            
+            gbc.gridx = 0; gbc.gridy = 2;
+            infoPanel.add(new JLabel("Statut:"), gbc);
+            gbc.gridx = 1;
+            
+            // ComboBox pour le statut (toujours modifiable)
+            String[] statusOptions = {"En préparation", "En livraison", "Livrée", "Annulée"};
+            JComboBox<String> statusCombo = new JComboBox<>(statusOptions);
+            String currentStatus = statutEnumVersString(commande.getStatut());
+            statusCombo.setSelectedItem(currentStatus);
+            infoPanel.add(statusCombo, gbc);
+            
+            gbc.gridx = 2; gbc.gridy = 2;
+            infoPanel.add(new JLabel("Gratuite:"), gbc);
+            gbc.gridx = 3;
+            JCheckBox gratuitCheckBox = new JCheckBox();
+            gratuitCheckBox.setSelected(commande.isEstGratuite());
+            gratuitCheckBox.setEnabled(peutModifierContenu); // Seulement si en préparation
+            infoPanel.add(gratuitCheckBox, gbc);
+            
+            mainPanel.add(infoPanel, BorderLayout.NORTH);
+            
+            // Section des pizzas (modifiable seulement si en préparation)
+            JPanel pizzaPanel = new JPanel(new BorderLayout());
+            pizzaPanel.setBorder(BorderFactory.createTitledBorder("Pizzas commandées"));
+            
+            // Tableau des pizzas actuelles
+            String[] pizzaColumns = {"Pizza", "Taille", "Quantité", "Prix unitaire", "Sous-total", "Actions"};
+            DefaultTableModel pizzaModel = new DefaultTableModel(pizzaColumns, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return peutModifierContenu && (column == 2 || column == 5); // Quantité et Actions
+                }
+            };
+            JTable pizzaTable = new JTable(pizzaModel);
+            pizzaTable.setRowHeight(35);
+            
+            // Charger les détails actuels
+            List<DetailCommande> details = detailCommandeDAO.trouverParCommande(idCommande);
+            for (DetailCommande detail : details) {
+                Object[] pizzaRow = {
+                    detail.getPizza().getNom(),
+                    detail.getTaille().getLibelle(),
+                    detail.getQuantite(),
+                    String.format("%.2f€", detail.getPrixUnitaire()),
+                    String.format("%.2f€", detail.calculerSousTotal()),
+                    peutModifierContenu ? "Supprimer" : "Non modifiable"
+                };
+                pizzaModel.addRow(pizzaRow);
+            }
+            
+            // Renderer pour la colonne Actions
+            pizzaTable.getColumnModel().getColumn(5).setCellRenderer(new javax.swing.table.TableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+                        boolean hasFocus, int row, int column) {
+                    JButton button = new JButton(value.toString());
+                    button.setEnabled(peutModifierContenu);
+                    if (peutModifierContenu) {
+                        button.setBackground(new Color(255, 182, 193)); // Rose clair
+                    } else {
+                        button.setBackground(Color.LIGHT_GRAY);
+                    }
+                    return button;
+                }
+            });
+            
+            // Editor pour la colonne Actions
+            if (peutModifierContenu) {
+                pizzaTable.getColumnModel().getColumn(5).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+                    private JButton button;
+                    private int currentRow;
+                    
+                    @Override
+                    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                        currentRow = row;
+                        button = new JButton("Supprimer");
+                        button.setBackground(new Color(255, 182, 193));
+                        button.addActionListener(e -> {
+                            stopCellEditing();
+                            pizzaModel.removeRow(currentRow);
+                            mettreAJourTotalModification(pizzaModel, editDialog);
+                        });
+                        return button;
+                    }
+                    
+                    @Override
+                    public Object getCellEditorValue() {
+                        return "Supprimer";
+                    }
+                });
+            }
+            
+            // Editor pour la colonne Quantité
+            if (peutModifierContenu) {
+                pizzaTable.getColumnModel().getColumn(2).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+                    @Override
+                    public boolean stopCellEditing() {
+                        try {
+                            String value = (String) getCellEditorValue();
+                            int quantite = Integer.parseInt(value);
+                            if (quantite <= 0) {
+                                throw new NumberFormatException("La quantité doit être positive");
+                            }
+                            
+                            // Mettre à jour le sous-total
+                            int selectedRow = pizzaTable.getSelectedRow();
+                            if (selectedRow >= 0) {
+                                String prixStr = (String) pizzaModel.getValueAt(selectedRow, 3);
+                                double prix = Double.parseDouble(prixStr.replace("€", "").replace(",", "."));
+                                double sousTotal = prix * quantite;
+                                pizzaModel.setValueAt(String.format("%.2f€", sousTotal), selectedRow, 4);
+                                mettreAJourTotalModification(pizzaModel, editDialog);
+                            }
+                            
+                            return super.stopCellEditing();
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(editDialog, 
+                                "Veuillez entrer une quantité valide (nombre entier positif)", 
+                                "Erreur de format", 
+                                JOptionPane.ERROR_MESSAGE);
+                            return false;
+                        }
+                    }
+                });
+            }
+            
+            JScrollPane pizzaScrollPane = new JScrollPane(pizzaTable);
+            pizzaPanel.add(pizzaScrollPane, BorderLayout.CENTER);
+            
+            // Panneau d'ajout de pizza (seulement si en préparation)
+            if (peutModifierContenu) {
+                JPanel addPizzaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                addPizzaPanel.setBorder(BorderFactory.createTitledBorder("Ajouter une pizza"));
+                
+                PizzaDAO pizzaDAO = new PizzaDAO();
+                List<Pizza> pizzas = pizzaDAO.trouverTous();
+                JComboBox<Pizza> pizzaCombo = new JComboBox<>();
+                for (Pizza pizza : pizzas) {
+                    pizzaCombo.addItem(pizza);
+                }
+                
+                TailleDAO tailleDAO = new TailleDAO();
+                List<Taille> tailles = tailleDAO.trouverTous();
+                JComboBox<Taille> tailleCombo = new JComboBox<>();
+                for (Taille taille : tailles) {
+                    tailleCombo.addItem(taille);
+                }
+                
+                JSpinner quantiteSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+                JButton addButton = new JButton("Ajouter");
+                
+                addPizzaPanel.add(new JLabel("Pizza:"));
+                addPizzaPanel.add(pizzaCombo);
+                addPizzaPanel.add(new JLabel("Taille:"));
+                addPizzaPanel.add(tailleCombo);
+                addPizzaPanel.add(new JLabel("Quantité:"));
+                addPizzaPanel.add(quantiteSpinner);
+                addPizzaPanel.add(addButton);
+                
+                // Action d'ajout de pizza
+                addButton.addActionListener(e -> {
+                    Pizza selectedPizza = (Pizza) pizzaCombo.getSelectedItem();
+                    Taille selectedTaille = (Taille) tailleCombo.getSelectedItem();
+                    int quantite = (Integer) quantiteSpinner.getValue();
+                    
+                    if (selectedPizza != null && selectedTaille != null) {
+                        double prixUnitaire = selectedTaille.calculerPrix(selectedPizza.getPrixBase());
+                        double sousTotal = prixUnitaire * quantite;
+                        
+                        Object[] newRow = {
+                            selectedPizza.getNom(),
+                            selectedTaille.getLibelle(),
+                            quantite,
+                            String.format("%.2f€", prixUnitaire),
+                            String.format("%.2f€", sousTotal),
+                            "Supprimer"
+                        };
+                        pizzaModel.addRow(newRow);
+                        mettreAJourTotalModification(pizzaModel, editDialog);
+                    }
+                });
+                
+                pizzaPanel.add(addPizzaPanel, BorderLayout.SOUTH);
+            } else {
+                // Message informatif si la commande ne peut pas être modifiée
+                JLabel infoLabel = new JLabel("<html><i>⚠️ Le contenu de cette commande ne peut plus être modifié car elle n'est plus en préparation.<br/>Seul le statut peut être changé.</i></html>");
+                infoLabel.setHorizontalAlignment(JLabel.CENTER);
+                infoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                pizzaPanel.add(infoLabel, BorderLayout.SOUTH);
+            }
+            
+            mainPanel.add(pizzaPanel, BorderLayout.CENTER);
+            
+            // Total et boutons
+            JPanel bottomPanel = new JPanel(new BorderLayout());
+            
+            // Total
+            JLabel totalLabel = new JLabel("Total: 0.00€");
+            totalLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+            totalLabel.setHorizontalAlignment(JLabel.RIGHT);
+            bottomPanel.add(totalLabel, BorderLayout.NORTH);
+            
+            // Mettre à jour le total initial
+            mettreAJourTotalModification(pizzaModel, editDialog);
+            
+            // Boutons
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JButton saveButton = new JButton("Enregistrer les modifications");
+            JButton cancelButton = new JButton("Annuler");
+            
+            saveButton.setPreferredSize(new Dimension(200, 35));
+            cancelButton.setPreferredSize(new Dimension(100, 35));
+            
+            buttonPanel.add(saveButton);
+            buttonPanel.add(cancelButton);
+            
+            bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
+            mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+            
+            // Action de sauvegarde
+            saveButton.addActionListener(e -> {
+                try {
+                    // Arrêter l'édition en cours pour sauvegarder les changements
+                    if (pizzaTable.isEditing()) {
+                        pizzaTable.getCellEditor().stopCellEditing();
+                    }
+                    
+                    // Mettre à jour le statut
+                    String newStatus = (String) statusCombo.getSelectedItem();
+                    Commande.Statut nouveauStatut = convertirStatutString(newStatus);
+                    commande.setStatut(nouveauStatut);
+                    commande.setEstGratuite(gratuitCheckBox.isSelected());
+                    
+                    // Si le contenu peut être modifié, mettre à jour les détails
+                    if (peutModifierContenu) {
+                        // Vérifier qu'il y a au moins une pizza
+                        if (pizzaModel.getRowCount() == 0) {
+                            JOptionPane.showMessageDialog(editDialog, 
+                                "Une commande doit contenir au moins une pizza", 
+                                "Commande vide", 
+                                JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        
+                        // Supprimer tous les anciens détails
+                        detailCommandeDAO.supprimerParCommande(idCommande);
+                        
+                        // Ajouter les nouveaux détails depuis le tableau
+                        PizzaDAO pizzaDAO = new PizzaDAO();
+                        TailleDAO tailleDAO = new TailleDAO();
+                        List<Pizza> pizzas = pizzaDAO.trouverTous();
+                        List<Taille> tailles = tailleDAO.trouverTous();
+                        
+                        double nouveauTotal = 0.0;
+                        
+                        for (int i = 0; i < pizzaModel.getRowCount(); i++) {
+                            String nomPizza = (String) pizzaModel.getValueAt(i, 0);
+                            String libelleTaille = (String) pizzaModel.getValueAt(i, 1);
+                            
+                            // Récupérer la quantité (peut être modifiée dans le tableau)
+                            Object quantiteObj = pizzaModel.getValueAt(i, 2);
+                            int quantite;
+                            if (quantiteObj instanceof Integer) {
+                                quantite = (Integer) quantiteObj;
+                            } else {
+                                try {
+                                    quantite = Integer.parseInt(quantiteObj.toString());
+                                } catch (NumberFormatException ex) {
+                                    JOptionPane.showMessageDialog(editDialog, 
+                                        "Quantité invalide à la ligne " + (i + 1) + ": " + quantiteObj, 
+                                        "Erreur de format", 
+                                        JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                            }
+                            
+                            if (quantite <= 0) {
+                                JOptionPane.showMessageDialog(editDialog, 
+                                    "La quantité doit être positive à la ligne " + (i + 1), 
+                                    "Quantité invalide", 
+                                    JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            
+                            String prixStr = (String) pizzaModel.getValueAt(i, 3);
+                            double prixUnitaire = Double.parseDouble(prixStr.replace("€", "").replace(",", "."));
+                            
+                            // Retrouver la pizza et la taille
+                            Pizza pizza = pizzas.stream()
+                                .filter(p -> p.getNom().equals(nomPizza))
+                                .findFirst().orElse(null);
+                            Taille taille = tailles.stream()
+                                .filter(t -> t.getLibelle().equals(libelleTaille))
+                                .findFirst().orElse(null);
+                            
+                            if (pizza != null && taille != null) {
+                                // Recalculer le prix unitaire au cas où la taille aurait changé
+                                double prixCalcule = taille.calculerPrix(pizza.getPrixBase());
+                                
+                                DetailCommande detail = new DetailCommande();
+                                detail.setCommande(commande);
+                                detail.setPizza(pizza);
+                                detail.setTaille(taille);
+                                detail.setQuantite(quantite);
+                                detail.setPrixUnitaire(prixCalcule);
+                                
+                                if (!detailCommandeDAO.inserer(detail)) {
+                                    JOptionPane.showMessageDialog(editDialog, 
+                                        "Erreur lors de l'ajout de la pizza: " + nomPizza, 
+                                        "Erreur", 
+                                        JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                                
+                                nouveauTotal += prixCalcule * quantite;
+                            } else {
+                                JOptionPane.showMessageDialog(editDialog, 
+                                    "Pizza ou taille introuvable: " + nomPizza + " - " + libelleTaille, 
+                                    "Erreur", 
+                                    JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                        }
+                        
+                        // Vérifier le solde si ce n'est pas gratuit
+                        if (!commande.isEstGratuite() && nouveauTotal > commande.getClient().getSoldeCompte()) {
+                            JOptionPane.showMessageDialog(editDialog, 
+                                String.format("Le solde du client (%.2f€) est insuffisant pour cette commande (%.2f€)", 
+                                    commande.getClient().getSoldeCompte(), nouveauTotal), 
+                                "Solde insuffisant", 
+                                JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                    }
+                    
+                    // Sauvegarder la commande
+                    if (commandeDAO.mettreAJour(commande)) {
+                        JOptionPane.showMessageDialog(editDialog, 
+                            "Commande modifiée avec succès!", 
+                            "Succès", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Rafraîchir le tableau principal
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        chargerCommandes(model, null, "Tous les statuts");
+                        
+                        editDialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(editDialog, 
+                            "Erreur lors de la modification de la commande", 
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(editDialog, 
+                        "Erreur inattendue : " + ex.getMessage(), 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            });
+            
+            // Action d'annulation
+            cancelButton.addActionListener(e -> editDialog.dispose());
+            
+            editDialog.setContentPane(mainPanel);
+            editDialog.setVisible(true);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de la modification : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Met à jour le total dans la fenêtre de modification
+     */
+    private void mettreAJourTotalModification(DefaultTableModel model, JDialog dialog) {
+        double total = 0.0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String sousTotal = (String) model.getValueAt(i, 4);
+            sousTotal = sousTotal.replace("€", "").replace(",", ".");
+            total += Double.parseDouble(sousTotal);
+        }
+        
+        // Trouver le label du total et le mettre à jour
+        Component[] components = ((JPanel) dialog.getContentPane()).getComponents();
+        for (Component comp : components) {
+            if (comp instanceof JPanel) {
+                JPanel panel = (JPanel) comp;
+                for (Component subComp : panel.getComponents()) {
+                    if (subComp instanceof JLabel) {
+                        JLabel label = (JLabel) subComp;
+                        if (label.getText().startsWith("Total:")) {
+                            label.setText("Total: " + String.format("%.2f€", total));
+                            return;
+                        }
+                    } else if (subComp instanceof JPanel) {
+                        JPanel subPanel = (JPanel) subComp;
+                        for (Component subSubComp : subPanel.getComponents()) {
+                            if (subSubComp instanceof JLabel) {
+                                JLabel label = (JLabel) subSubComp;
+                                if (label.getText().startsWith("Total:")) {
+                                    label.setText("Total: " + String.format("%.2f€", total));
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Supprime une commande
+     */
+    private void supprimerCommande(int row, JTable table) {
+        try {
+            int idCommande = (int) table.getValueAt(row, 0);
+            
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Êtes-vous sûr de vouloir supprimer la commande #" + idCommande + " ?",
+                "Confirmation de suppression",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            
+            if (confirmation == JOptionPane.YES_OPTION) {
+                CommandeDAO commandeDAO = new CommandeDAO();
+                if (commandeDAO.supprimer(idCommande)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Commande supprimée avec succès!", 
+                            "Succès", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                    // Rafraîchir le tableau
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    chargerCommandes(model, null, "Tous les statuts");
+                    } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Erreur lors de la suppression de la commande", 
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de la suppression : " + e.getMessage(), 
+                "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Crée une nouvelle commande
+     */
+    private void creerNouvelleCommande(DefaultTableModel tableModel) {
+        // Créer une fenêtre de création de commande
+        JDialog createDialog = new JDialog(this, "Nouvelle commande", true);
+        createDialog.setSize(800, 600);
+        createDialog.setLocationRelativeTo(this);
+        
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        
+        // Sélection du client
+        JPanel clientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        clientPanel.setBorder(BorderFactory.createTitledBorder("Client"));
+        
+        ClientDAO clientDAO = new ClientDAO();
+        List<Client> clients = clientDAO.trouverTous();
+        JComboBox<Client> clientCombo = new JComboBox<>();
+        for (Client client : clients) {
+            clientCombo.addItem(client);
+        }
+        clientCombo.setRenderer(new javax.swing.ListCellRenderer<Client>() {
+            @Override
+            public Component getListCellRendererComponent(JList<? extends Client> list, Client value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = new JLabel();
+                if (value != null) {
+                    label.setText(value.getNom() + " " + value.getPrenom() + " (Solde: " + 
+                                String.format("%.2f€", value.getSoldeCompte()) + ")");
+                }
+                if (isSelected) {
+                    label.setBackground(list.getSelectionBackground());
+                    label.setForeground(list.getSelectionForeground());
+                    label.setOpaque(true);
+                }
+                return label;
+            }
+        });
+        
+        JCheckBox gratuitCheckBox = new JCheckBox("Commande gratuite");
+        
+        clientPanel.add(new JLabel("Client:"));
+        clientPanel.add(clientCombo);
+        clientPanel.add(Box.createHorizontalStrut(20));
+        clientPanel.add(gratuitCheckBox);
+        
+        mainPanel.add(clientPanel, BorderLayout.NORTH);
+        
+        // Sélection des pizzas
+        JPanel pizzaPanel = new JPanel(new BorderLayout());
+        pizzaPanel.setBorder(BorderFactory.createTitledBorder("Pizzas à commander"));
+        
+        // Tableau pour les pizzas sélectionnées
+        String[] pizzaColumns = {"Pizza", "Taille", "Quantité", "Prix unitaire", "Sous-total", "Actions"};
+        DefaultTableModel pizzaModel = new DefaultTableModel(pizzaColumns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 2 || column == 5; // Quantité et Actions
+            }
+        };
+        JTable pizzaTable = new JTable(pizzaModel);
+        
+        // Panneau d'ajout de pizza
+        JPanel addPizzaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
+        PizzaDAO pizzaDAO = new PizzaDAO();
+        List<Pizza> pizzas = pizzaDAO.trouverTous();
+        JComboBox<Pizza> pizzaCombo = new JComboBox<>();
+        for (Pizza pizza : pizzas) {
+            pizzaCombo.addItem(pizza);
+        }
+        
+        TailleDAO tailleDAO = new TailleDAO();
+        List<Taille> tailles = tailleDAO.trouverTous();
+        JComboBox<Taille> tailleCombo = new JComboBox<>();
+        for (Taille taille : tailles) {
+            tailleCombo.addItem(taille);
+        }
+        
+        JSpinner quantiteSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        JButton addPizzaButton = new JButton("Ajouter");
+        
+        addPizzaPanel.add(new JLabel("Pizza:"));
+        addPizzaPanel.add(pizzaCombo);
+        addPizzaPanel.add(new JLabel("Taille:"));
+        addPizzaPanel.add(tailleCombo);
+        addPizzaPanel.add(new JLabel("Quantité:"));
+        addPizzaPanel.add(quantiteSpinner);
+        addPizzaPanel.add(addPizzaButton);
+        
+        pizzaPanel.add(addPizzaPanel, BorderLayout.NORTH);
+        pizzaPanel.add(new JScrollPane(pizzaTable), BorderLayout.CENTER);
+        
+        // Label du total
+        JLabel totalLabel = new JLabel("Total: 0.00€");
+        totalLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPanel.add(totalLabel);
+        pizzaPanel.add(totalPanel, BorderLayout.SOUTH);
+        
+        mainPanel.add(pizzaPanel, BorderLayout.CENTER);
+        
+        // Boutons de validation
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton saveButton = new JButton("Créer la commande");
+        JButton cancelButton = new JButton("Annuler");
+        
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+        
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+        // Action d'ajout de pizza
+        addPizzaButton.addActionListener(e -> {
+            Pizza selectedPizza = (Pizza) pizzaCombo.getSelectedItem();
+            Taille selectedTaille = (Taille) tailleCombo.getSelectedItem();
+            int quantite = (Integer) quantiteSpinner.getValue();
+            
+            if (selectedPizza != null && selectedTaille != null) {
+                double prixUnitaire = selectedTaille.calculerPrix(selectedPizza.getPrixBase());
+                double sousTotal = prixUnitaire * quantite;
+                
+                Object[] row = {
+                    selectedPizza.getNom(),
+                    selectedTaille.getLibelle(),
+                    quantite,
+                    String.format("%.2f€", prixUnitaire),
+                    String.format("%.2f€", sousTotal),
+                    "Supprimer"
+                };
+                pizzaModel.addRow(row);
+                
+                // Mettre à jour le total
+                mettreAJourTotal(pizzaModel, totalLabel);
+            }
+        });
+        
+        // Action de sauvegarde
+        saveButton.addActionListener(e -> {
+            try {
+                Client selectedClient = (Client) clientCombo.getSelectedItem();
+                boolean estGratuite = gratuitCheckBox.isSelected();
+                
+                if (selectedClient == null) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Veuillez sélectionner un client", 
+                        "Champ requis", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                if (pizzaModel.getRowCount() == 0) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Veuillez ajouter au moins une pizza", 
+                        "Commande vide", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                // Créer la commande
+                Commande nouvelleCommande = new Commande(selectedClient);
+                nouvelleCommande.setEstGratuite(estGratuite);
+                
+                // Ajouter les détails
+                for (int i = 0; i < pizzaModel.getRowCount(); i++) {
+                    String nomPizza = (String) pizzaModel.getValueAt(i, 0);
+                    String libelleTaille = (String) pizzaModel.getValueAt(i, 1);
+                    int quantite = (Integer) pizzaModel.getValueAt(i, 2);
+                    
+                    // Retrouver la pizza et la taille
+                    Pizza pizza = pizzas.stream()
+                        .filter(p -> p.getNom().equals(nomPizza))
+                        .findFirst().orElse(null);
+                    Taille taille = tailles.stream()
+                        .filter(t -> t.getLibelle().equals(libelleTaille))
+                        .findFirst().orElse(null);
+                    
+                    if (pizza != null && taille != null) {
+                        nouvelleCommande.ajouterPizza(pizza, taille, quantite);
+                    }
+                }
+                
+                // Vérifier le solde si ce n'est pas gratuit
+                if (!estGratuite && !nouvelleCommande.peutEtrePrepare()) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Le solde du client est insuffisant pour cette commande", 
+                        "Solde insuffisant", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                // Sauvegarder la commande
+                CommandeDAO commandeDAO = new CommandeDAO();
+                if (commandeDAO.inserer(nouvelleCommande)) {
+                    // Valider la commande (débiter le compte si nécessaire)
+                    if (nouvelleCommande.valider()) {
+                        // Mettre à jour le client dans la base
+                        clientDAO.mettreAJour(selectedClient);
+                    }
+                    
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Commande créée avec succès!", 
+                        "Succès", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Rafraîchir le tableau principal
+                    chargerCommandes(tableModel, null, "Tous les statuts");
+                    
+                    createDialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Erreur lors de la création de la commande", 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(createDialog, 
+                    "Erreur inattendue : " + ex.getMessage(), 
+                    "Erreur", 
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        
+        // Action d'annulation
+        cancelButton.addActionListener(e -> createDialog.dispose());
+        
+        createDialog.setContentPane(mainPanel);
+        createDialog.setVisible(true);
+    }
+    
+    /**
+     * Met à jour le total affiché
+     */
+    private void mettreAJourTotal(DefaultTableModel model, JLabel totalLabel) {
+        double total = 0.0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String sousTotal = (String) model.getValueAt(i, 4);
+            // Enlever le symbole € et remplacer les virgules par des points
+            sousTotal = sousTotal.replace("€", "").replace(",", ".");
+            total += Double.parseDouble(sousTotal);
+        }
+        totalLabel.setText("Total: " + String.format("%.2f€", total));
     }
     
     /**
@@ -1531,12 +2688,830 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // À implémenter : suivi des livraisons, livreurs, véhicules, etc.
-        JLabel label = new JLabel("Gestion des livraisons");
-        label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // Panneau de contrôles en haut
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Rechercher");
+        JButton addButton = new JButton("Nouvelle livraison");
+        JButton refreshButton = new JButton("Actualiser");
+        
+        // ComboBox pour filtrer par statut de livraison
+        JComboBox<String> statusFilter = new JComboBox<>();
+        statusFilter.addItem("Toutes les livraisons");
+        statusFilter.addItem("En cours");
+        statusFilter.addItem("Terminées");
+        statusFilter.addItem("En retard");
+        
+        controlPanel.add(new JLabel("🔍 Rechercher livreur :"));
+        controlPanel.add(searchField);
+        controlPanel.add(searchButton);
+        controlPanel.add(Box.createHorizontalStrut(20));
+        controlPanel.add(new JLabel("Statut :"));
+        controlPanel.add(statusFilter);
+        controlPanel.add(Box.createHorizontalStrut(20));
+        controlPanel.add(addButton);
+        controlPanel.add(refreshButton);
+        
+        panel.add(controlPanel, BorderLayout.NORTH);
+        
+        // Tableau des livraisons
+        String[] columnNames = {
+            "ID", "Commande", "Livreur", "Véhicule", "Heure départ", "Heure arrivée", "Durée", "Statut", "Actions"
+        };
+        
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 8; // Seule la colonne Actions est éditable
+            }
+        };
+        
+        JTable livraisonsTable = new JTable(tableModel);
+        livraisonsTable.setRowHeight(45);
+        
+        // Désactiver la sélection des lignes
+        livraisonsTable.setRowSelectionAllowed(false);
+        livraisonsTable.setColumnSelectionAllowed(false);
+        livraisonsTable.setCellSelectionEnabled(false);
+        
+        // Ajuster les largeurs des colonnes
+        livraisonsTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // ID
+        livraisonsTable.getColumnModel().getColumn(1).setPreferredWidth(80);  // Commande
+        livraisonsTable.getColumnModel().getColumn(2).setPreferredWidth(120); // Livreur
+        livraisonsTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Véhicule
+        livraisonsTable.getColumnModel().getColumn(4).setPreferredWidth(100); // Heure départ
+        livraisonsTable.getColumnModel().getColumn(5).setPreferredWidth(100); // Heure arrivée
+        livraisonsTable.getColumnModel().getColumn(6).setPreferredWidth(80);  // Durée
+        livraisonsTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Statut
+        livraisonsTable.getColumnModel().getColumn(8).setPreferredWidth(250); // Actions
+        
+        // Renderer personnalisé pour la colonne Actions
+        livraisonsTable.getColumnModel().getColumn(8).setCellRenderer(new javax.swing.table.TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+                    boolean hasFocus, int row, int column) {
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+                
+                // Vérifier si la livraison est terminée
+                String heureArrivee = (String) table.getValueAt(row, 5);
+                boolean estTerminee = !heureArrivee.equals("-");
+                
+                JButton detailsButton = new JButton("Détails");
+                JButton editButton = new JButton("Modifier");
+                JButton finishButton = new JButton("Terminer");
+                JButton deleteButton = new JButton("Supprimer");
+                
+                // Taille des boutons
+                detailsButton.setPreferredSize(new Dimension(70, 30));
+                editButton.setPreferredSize(new Dimension(70, 30));
+                finishButton.setPreferredSize(new Dimension(70, 30));
+                deleteButton.setPreferredSize(new Dimension(80, 30));
+                
+                // Police
+                Font buttonFont = new Font("Dialog", Font.BOLD, 10);
+                detailsButton.setFont(buttonFont);
+                editButton.setFont(buttonFont);
+                finishButton.setFont(buttonFont);
+                deleteButton.setFont(buttonFont);
+                
+                // Couleurs
+                detailsButton.setBackground(new Color(173, 216, 230)); // Bleu clair
+                editButton.setBackground(new Color(255, 255, 224)); // Jaune clair
+                finishButton.setBackground(new Color(144, 238, 144)); // Vert clair
+                deleteButton.setBackground(new Color(255, 182, 193)); // Rose clair
+                
+                detailsButton.setOpaque(true);
+                editButton.setOpaque(true);
+                finishButton.setOpaque(true);
+                deleteButton.setOpaque(true);
+                
+                buttonPanel.add(detailsButton);
+                buttonPanel.add(editButton);
+                
+                // Le bouton "Terminer" n'est visible que si la livraison n'est pas terminée
+                if (!estTerminee) {
+                    buttonPanel.add(finishButton);
+                } else {
+                    finishButton.setEnabled(false);
+                    finishButton.setBackground(Color.LIGHT_GRAY);
+                }
+                
+                buttonPanel.add(deleteButton);
+                
+                buttonPanel.setBackground(table.getBackground());
+                return buttonPanel;
+            }
+        });
+        
+        // Editor personnalisé pour la colonne Actions
+        livraisonsTable.getColumnModel().getColumn(8).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+            private JPanel buttonPanel;
+            private int currentRow;
+            
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                currentRow = row;
+                buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+                
+                // Vérifier si la livraison est terminée
+                String heureArrivee = (String) table.getValueAt(row, 5);
+                boolean estTerminee = !heureArrivee.equals("-");
+                
+                JButton detailsButton = new JButton("Détails");
+                JButton editButton = new JButton("Modifier");
+                JButton finishButton = new JButton("Terminer");
+                JButton deleteButton = new JButton("Supprimer");
+                
+                // Taille des boutons
+                detailsButton.setPreferredSize(new Dimension(70, 30));
+                editButton.setPreferredSize(new Dimension(70, 30));
+                finishButton.setPreferredSize(new Dimension(70, 30));
+                deleteButton.setPreferredSize(new Dimension(80, 30));
+                
+                // Police
+                Font buttonFont = new Font("Dialog", Font.BOLD, 10);
+                detailsButton.setFont(buttonFont);
+                editButton.setFont(buttonFont);
+                finishButton.setFont(buttonFont);
+                deleteButton.setFont(buttonFont);
+                
+                // Couleurs
+                detailsButton.setBackground(new Color(173, 216, 230));
+                editButton.setBackground(new Color(255, 255, 224));
+                finishButton.setBackground(new Color(144, 238, 144));
+                deleteButton.setBackground(new Color(255, 182, 193));
+                
+                detailsButton.setOpaque(true);
+                editButton.setOpaque(true);
+                finishButton.setOpaque(true);
+                deleteButton.setOpaque(true);
+                
+                // Actions des boutons
+                detailsButton.addActionListener(e -> {
+                    stopCellEditing();
+                    afficherDetailsLivraison(currentRow, livraisonsTable);
+                });
+                
+                editButton.addActionListener(e -> {
+                    stopCellEditing();
+                    modifierLivraison(currentRow, livraisonsTable);
+                });
+                
+                finishButton.addActionListener(e -> {
+                    stopCellEditing();
+                    terminerLivraison(currentRow, livraisonsTable);
+                });
+                
+                deleteButton.addActionListener(e -> {
+                    stopCellEditing();
+                    supprimerLivraison(currentRow, livraisonsTable);
+                });
+                
+                buttonPanel.add(detailsButton);
+                buttonPanel.add(editButton);
+                
+                // Le bouton "Terminer" n'est visible que si la livraison n'est pas terminée
+                if (!estTerminee) {
+                    buttonPanel.add(finishButton);
+                }
+                
+                buttonPanel.add(deleteButton);
+                
+                return buttonPanel;
+            }
+            
+            @Override
+            public Object getCellEditorValue() {
+                return "";
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane(livraisonsTable);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        // Charger les livraisons au démarrage
+        chargerLivraisons(tableModel, null, "Toutes les livraisons");
+        
+        // Actions des boutons de contrôle
+        searchButton.addActionListener(e -> {
+            String searchTerm = searchField.getText().trim();
+            String selectedStatus = (String) statusFilter.getSelectedItem();
+            chargerLivraisons(tableModel, searchTerm.isEmpty() ? null : searchTerm, selectedStatus);
+        });
+        
+        statusFilter.addActionListener(e -> {
+            String searchTerm = searchField.getText().trim();
+            String selectedStatus = (String) statusFilter.getSelectedItem();
+            chargerLivraisons(tableModel, searchTerm.isEmpty() ? null : searchTerm, selectedStatus);
+        });
+        
+        refreshButton.addActionListener(e -> {
+            searchField.setText("");
+            statusFilter.setSelectedIndex(0);
+            chargerLivraisons(tableModel, null, "Toutes les livraisons");
+        });
+        
+        addButton.addActionListener(e -> {
+            creerNouvelleLivraison(tableModel);
+        });
+        
+        // Recherche en temps réel
+        searchField.addActionListener(e -> searchButton.doClick());
         
         return panel;
+    }
+    
+    /**
+     * Charge les livraisons dans le tableau
+     */
+    private void chargerLivraisons(DefaultTableModel tableModel, String searchTerm, String statusFilter) {
+        try {
+            tableModel.setRowCount(0); // Vider le tableau
+            
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            List<Livraison> livraisons = livraisonDAO.trouverTous();
+            
+            for (Livraison livraison : livraisons) {
+                // Filtrer par terme de recherche (nom du livreur)
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    String nomComplet = (livraison.getLivreur().getNom() + " " + livraison.getLivreur().getPrenom()).toLowerCase();
+                    if (!nomComplet.contains(searchTerm.toLowerCase())) {
+                        continue;
+                    }
+                }
+                
+                // Filtrer par statut
+                if (statusFilter != null && !statusFilter.equals("Toutes les livraisons")) {
+                    String statutLivraison = determinerStatutLivraison(livraison);
+                    if (!statutLivraison.equals(statusFilter)) {
+                        continue;
+                    }
+                }
+                
+                // Calculer la durée
+                String duree = calculerDureeLivraison(livraison);
+                
+                // Déterminer l'heure d'arrivée
+                String heureArrivee = livraison.getHeureArrivee() != null ? 
+                    livraison.getHeureArrivee().toString() : "-";
+                
+                Object[] row = {
+                    livraison.getIdLivraison(),
+                    livraison.getCommande().getIdCommande(),
+                    livraison.getLivreur().getNom() + " " + livraison.getLivreur().getPrenom(),
+                    livraison.getVehicule().toString(),
+                    livraison.getHeureDepart().toString(),
+                    heureArrivee,
+                    duree,
+                    formatStatutLivraison(livraison),
+                    "Actions"
+                };
+                
+                tableModel.addRow(row);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement des livraisons : " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors du chargement des livraisons : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Détermine le statut d'une livraison basé sur ses propriétés
+     */
+    private String determinerStatutLivraison(Livraison livraison) {
+        if (livraison.isEstEnRetard()) {
+            return "En retard";
+        } else if (livraison.getHeureArrivee() != null) {
+            return "Terminées";
+        } else {
+            return "En cours";
+        }
+    }
+    
+    /**
+     * Calcule la durée d'une livraison
+     */
+    private String calculerDureeLivraison(Livraison livraison) {
+        long dureeMinutes = livraison.calculerDureeMinutes();
+        if (dureeMinutes >= 0) {
+            return dureeMinutes + " min";
+        } else {
+            return "-";
+        }
+    }
+    
+    /**
+     * Formate le statut d'une livraison pour l'affichage
+     */
+    private String formatStatutLivraison(Livraison livraison) {
+        if (livraison.isEstEnRetard()) {
+            return "⚠️ En retard";
+        } else if (livraison.getHeureArrivee() != null) {
+            return "✅ Terminée";
+        } else {
+            return "🔄 En cours";
+        }
+    }
+    
+    /**
+     * Affiche les détails d'une livraison
+     */
+    private void afficherDetailsLivraison(int row, JTable table) {
+        try {
+            int idLivraison = (int) table.getValueAt(row, 0);
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            
+            Livraison livraison = livraisonDAO.trouverParId(idLivraison);
+            
+            if (livraison == null) {
+                JOptionPane.showMessageDialog(this, "Livraison introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Créer une fenêtre de détails
+            JDialog detailsDialog = new JDialog(this, "Détails de la livraison #" + idLivraison, true);
+            detailsDialog.setSize(600, 400);
+            detailsDialog.setLocationRelativeTo(this);
+            
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            // Informations générales
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            gbc.gridx = 0; gbc.gridy = 0;
+            infoPanel.add(new JLabel("Livraison #:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(String.valueOf(livraison.getIdLivraison())), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 1;
+            infoPanel.add(new JLabel("Commande #:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(String.valueOf(livraison.getCommande().getIdCommande())), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 2;
+            infoPanel.add(new JLabel("Client:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(livraison.getCommande().getClient().getNom() + " " + 
+                livraison.getCommande().getClient().getPrenom()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 3;
+            infoPanel.add(new JLabel("Livreur:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(livraison.getLivreur().getNomComplet()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 4;
+            infoPanel.add(new JLabel("Véhicule:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(livraison.getVehicule().toString()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 5;
+            infoPanel.add(new JLabel("Heure départ:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(livraison.getHeureDepart().toString()), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 6;
+            infoPanel.add(new JLabel("Heure arrivée:"), gbc);
+            gbc.gridx = 1;
+            String heureArrivee = livraison.getHeureArrivee() != null ? 
+                livraison.getHeureArrivee().toString() : "Non terminée";
+            infoPanel.add(new JLabel(heureArrivee), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 7;
+            infoPanel.add(new JLabel("Durée:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(calculerDureeLivraison(livraison)), gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 8;
+            infoPanel.add(new JLabel("Statut:"), gbc);
+            gbc.gridx = 1;
+            infoPanel.add(new JLabel(formatStatutLivraison(livraison)), gbc);
+            
+            mainPanel.add(infoPanel, BorderLayout.CENTER);
+            
+            // Bouton de fermeture
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JButton closeButton = new JButton("Fermer");
+            closeButton.addActionListener(e -> detailsDialog.dispose());
+            buttonPanel.add(closeButton);
+            
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            
+            detailsDialog.setContentPane(mainPanel);
+            detailsDialog.setVisible(true);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de l'affichage des détails : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Modifie une livraison
+     */
+    private void modifierLivraison(int row, JTable table) {
+        try {
+            int idLivraison = (int) table.getValueAt(row, 0);
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            
+            Livraison livraison = livraisonDAO.trouverParId(idLivraison);
+            
+            if (livraison == null) {
+                JOptionPane.showMessageDialog(this, "Livraison introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Créer la fenêtre de modification
+            JDialog editDialog = new JDialog(this, "Modifier la livraison #" + idLivraison, true);
+            editDialog.setSize(500, 400);
+            editDialog.setLocationRelativeTo(this);
+            
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            // Formulaire de modification
+            JPanel formPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            // Sélection du livreur
+            gbc.gridx = 0; gbc.gridy = 0;
+            formPanel.add(new JLabel("Livreur:"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            
+            LivreurDAO livreurDAO = new LivreurDAO();
+            List<Livreur> livreurs = livreurDAO.trouverTous();
+            JComboBox<Livreur> livreurCombo = new JComboBox<>();
+            for (Livreur livreur : livreurs) {
+                livreurCombo.addItem(livreur);
+            }
+            livreurCombo.setSelectedItem(livraison.getLivreur());
+            formPanel.add(livreurCombo, gbc);
+            
+            // Sélection du véhicule
+            gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+            formPanel.add(new JLabel("Véhicule:"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            
+            VehiculeDAO vehiculeDAO = new VehiculeDAO();
+            List<Vehicule> vehiculesDisponibles = vehiculeDAO.trouverVehiculesDisponibles();
+            // Ajouter le véhicule actuel s'il n'est pas dans la liste des disponibles
+            if (!vehiculesDisponibles.contains(livraison.getVehicule())) {
+                vehiculesDisponibles.add(livraison.getVehicule());
+            }
+            JComboBox<Vehicule> vehiculeCombo = new JComboBox<>();
+            for (Vehicule vehicule : vehiculesDisponibles) {
+                vehiculeCombo.addItem(vehicule);
+            }
+            vehiculeCombo.setSelectedItem(livraison.getVehicule());
+            formPanel.add(vehiculeCombo, gbc);
+            
+            // Heure de départ
+            gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+            formPanel.add(new JLabel("Heure départ:"), gbc);
+            gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+            JTextField heureDepart = new JTextField(livraison.getHeureDepart().toString());
+            formPanel.add(heureDepart, gbc);
+            
+            // Checkbox pour marquer en retard
+            gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+            JCheckBox retardCheckBox = new JCheckBox("Marquer comme en retard");
+            retardCheckBox.setSelected(livraison.isEstEnRetard());
+            formPanel.add(retardCheckBox, gbc);
+            
+            mainPanel.add(formPanel, BorderLayout.CENTER);
+            
+            // Boutons
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JButton saveButton = new JButton("Enregistrer");
+            JButton cancelButton = new JButton("Annuler");
+            
+            buttonPanel.add(saveButton);
+            buttonPanel.add(cancelButton);
+            
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            
+            // Action de sauvegarde
+            saveButton.addActionListener(e -> {
+                try {
+                    Livreur selectedLivreur = (Livreur) livreurCombo.getSelectedItem();
+                    Vehicule selectedVehicule = (Vehicule) vehiculeCombo.getSelectedItem();
+                    
+                    livraison.setLivreur(selectedLivreur);
+                    livraison.setVehicule(selectedVehicule);
+                    livraison.setEstEnRetard(retardCheckBox.isSelected());
+                    
+                    // Essayer de parser l'heure
+                    try {
+                        livraison.setHeureDepart(java.time.LocalTime.parse(heureDepart.getText()));
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(editDialog, 
+                            "Format d'heure invalide. Utilisez le format HH:MM", 
+                            "Erreur de format", 
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
+                    if (livraisonDAO.mettreAJour(livraison)) {
+                        JOptionPane.showMessageDialog(editDialog, 
+                            "Livraison modifiée avec succès!", 
+                            "Succès", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Rafraîchir le tableau principal
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        chargerLivraisons(model, null, "Toutes les livraisons");
+                        
+                        editDialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(editDialog, 
+                            "Erreur lors de la modification de la livraison", 
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(editDialog, 
+                        "Erreur inattendue : " + ex.getMessage(), 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            });
+            
+            // Action d'annulation
+            cancelButton.addActionListener(e -> editDialog.dispose());
+            
+            editDialog.setContentPane(mainPanel);
+            editDialog.setVisible(true);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de la modification : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Termine une livraison
+     */
+    private void terminerLivraison(int row, JTable table) {
+        try {
+            int idLivraison = (int) table.getValueAt(row, 0);
+            LivraisonDAO livraisonDAO = new LivraisonDAO();
+            
+            Livraison livraison = livraisonDAO.trouverParId(idLivraison);
+            
+            if (livraison == null) {
+                JOptionPane.showMessageDialog(this, "Livraison introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (livraison.getHeureArrivee() != null) {
+                JOptionPane.showMessageDialog(this, "Cette livraison est déjà terminée", "Information", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Êtes-vous sûr de vouloir terminer la livraison #" + idLivraison + " ?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            
+            if (confirmation == JOptionPane.YES_OPTION) {
+                // Terminer la livraison
+                livraison.terminerLivraison();
+                
+                if (livraisonDAO.mettreAJour(livraison)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Livraison terminée avec succès!", 
+                        "Succès", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Rafraîchir le tableau
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    chargerLivraisons(model, null, "Toutes les livraisons");
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Erreur lors de la finalisation de la livraison", 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de la finalisation : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Supprime une livraison
+     */
+    private void supprimerLivraison(int row, JTable table) {
+        try {
+            int idLivraison = (int) table.getValueAt(row, 0);
+            
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Êtes-vous sûr de vouloir supprimer la livraison #" + idLivraison + " ?",
+                "Confirmation de suppression",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            
+            if (confirmation == JOptionPane.YES_OPTION) {
+                LivraisonDAO livraisonDAO = new LivraisonDAO();
+                if (livraisonDAO.supprimer(idLivraison)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Livraison supprimée avec succès!", 
+                        "Succès", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Rafraîchir le tableau
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    chargerLivraisons(model, null, "Toutes les livraisons");
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Erreur lors de la suppression de la livraison", 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors de la suppression : " + e.getMessage(), 
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Crée une nouvelle livraison
+     */
+    private void creerNouvelleLivraison(DefaultTableModel tableModel) {
+        // Créer une fenêtre de création de livraison
+        JDialog createDialog = new JDialog(this, "Nouvelle livraison", true);
+        createDialog.setSize(600, 500);
+        createDialog.setLocationRelativeTo(this);
+        
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        
+        // Formulaire
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        
+        // Sélection de la commande (seulement celles en livraison)
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(new JLabel("Commande:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+        
+        CommandeDAO commandeDAO = new CommandeDAO();
+        List<Commande> toutesCommandes = commandeDAO.trouverTous();
+        List<Commande> commandesEnLivraison = new ArrayList<>();
+        for (Commande commande : toutesCommandes) {
+            if (commande.getStatut() == Commande.Statut.EN_LIVRAISON) {
+                commandesEnLivraison.add(commande);
+            }
+        }
+        JComboBox<Commande> commandeCombo = new JComboBox<>();
+        for (Commande commande : commandesEnLivraison) {
+            commandeCombo.addItem(commande);
+        }
+        formPanel.add(commandeCombo, gbc);
+        
+        // Sélection du livreur
+        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+        formPanel.add(new JLabel("Livreur:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+        
+        LivreurDAO livreurDAO = new LivreurDAO();
+        List<Livreur> livreurs = livreurDAO.trouverTous();
+        JComboBox<Livreur> livreurCombo = new JComboBox<>();
+        for (Livreur livreur : livreurs) {
+            livreurCombo.addItem(livreur);
+        }
+        formPanel.add(livreurCombo, gbc);
+        
+        // Sélection du véhicule (seulement les disponibles)
+        gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+        formPanel.add(new JLabel("Véhicule:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+        
+        VehiculeDAO vehiculeDAO = new VehiculeDAO();
+        List<Vehicule> vehiculesDisponibles = vehiculeDAO.trouverVehiculesDisponibles();
+        JComboBox<Vehicule> vehiculeCombo = new JComboBox<>();
+        for (Vehicule vehicule : vehiculesDisponibles) {
+            vehiculeCombo.addItem(vehicule);
+        }
+        formPanel.add(vehiculeCombo, gbc);
+        
+        // Heure de départ (par défaut maintenant)
+        gbc.gridx = 0; gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+        formPanel.add(new JLabel("Heure départ:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
+        JTextField heureDepart = new JTextField(java.time.LocalTime.now().toString());
+        formPanel.add(heureDepart, gbc);
+        
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        
+        // Boutons de validation
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton saveButton = new JButton("Créer la livraison");
+        JButton cancelButton = new JButton("Annuler");
+        
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+        
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+        // Action de sauvegarde
+        saveButton.addActionListener(e -> {
+            try {
+                Commande selectedCommande = (Commande) commandeCombo.getSelectedItem();
+                Livreur selectedLivreur = (Livreur) livreurCombo.getSelectedItem();
+                Vehicule selectedVehicule = (Vehicule) vehiculeCombo.getSelectedItem();
+                
+                if (selectedCommande == null || selectedLivreur == null || selectedVehicule == null) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Veuillez sélectionner tous les champs requis", 
+                        "Champs requis", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                // Créer la livraison
+                Livraison nouvelleLivraison = new Livraison(selectedLivreur, selectedVehicule, selectedCommande);
+                
+                // Définir l'heure de départ
+                try {
+                    nouvelleLivraison.setHeureDepart(java.time.LocalTime.parse(heureDepart.getText()));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Format d'heure invalide. Utilisez le format HH:MM", 
+                        "Erreur de format", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Sauvegarder la livraison
+                LivraisonDAO livraisonDAO = new LivraisonDAO();
+                if (livraisonDAO.inserer(nouvelleLivraison)) {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Livraison créée avec succès!", 
+                        "Succès", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Rafraîchir le tableau principal
+                    chargerLivraisons(tableModel, null, "Toutes les livraisons");
+                    
+                    createDialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(createDialog, 
+                        "Erreur lors de la création de la livraison", 
+                        "Erreur", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(createDialog, 
+                    "Erreur inattendue : " + ex.getMessage(), 
+                    "Erreur", 
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        
+        // Action d'annulation
+        cancelButton.addActionListener(e -> createDialog.dispose());
+        
+        createDialog.setContentPane(mainPanel);
+        createDialog.setVisible(true);
     }
     
     /**
@@ -1593,7 +3568,7 @@ public class MainFrame extends JFrame {
         DefaultTableModel modele = (DefaultTableModel) table.getModel();
         modele.setRowCount(0);
         for (Client client : clients) {
-            modele.addRow(new Object[]{
+            modele.addRow(new Object[] { 
                 client.getIdClient(),
                 client.getNom(),
                 client.getPrenom(),
